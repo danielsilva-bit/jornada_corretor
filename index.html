@@ -1,84 +1,105 @@
-<title>Jornada da Corretora</title>
+<title>EGV Usadosbr - Jornada da Corretora</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
   :root{
-    --bg:#eef1f4;
+    --bg:#f5f4f2;
     --surface:#ffffff;
-    --surface-2:#e2e7ec;
-    --surface-3:#d8dee5;
-    --border:#d3d9e0;
-    --text:#16202b;
-    --text-muted:#5b6b7a;
-    --accent:#0f6e6e;
-    --accent-strong:#0a4f4f;
-    --accent-soft:#dcefee;
-    --ok:#1a7f4b;
+    --surface-2:#ece9e3;
+    --surface-3:#ddd8ce;
+    --border:#ddd8ce;
+    --text:#151312;
+    --text-muted:#6b665d;
+
+    --accent:#8a6208;
+    --accent-strong:#6b4b05;
+    --accent-soft:#fbead0;
+    --accent-solid:#FFBD4C;
+    --accent-solid-hover:#e8ac3d;
+    --on-accent-solid:#151312;
+
+    --ok:#1f8a4c;
     --ok-soft:#e2f3e9;
-    --warn:#b8790a;
-    --warn-soft:#faf0dd;
+    --warn:#c15b1f;
+    --warn-soft:#faead9;
     --danger:#c0392b;
     --danger-soft:#fbe6e2;
-    --owner-usadosbr:#0f6e6e;
-    --owner-usadosbr-soft:#dcefee;
-    --owner-c6:#5b4b8a;
-    --owner-c6-soft:#e7e3f3;
-    --owner-corretora:#b8790a;
-    --owner-corretora-soft:#faf0dd;
-    --shadow: 0 1px 2px rgba(22,32,43,.06), 0 6px 16px rgba(22,32,43,.06);
+
+    --owner-usadosbr:#8a6208;
+    --owner-usadosbr-soft:#fbead0;
+    --owner-c6:#1f6fb2;
+    --owner-c6-soft:#dff0ff;
+    --owner-corretora:#7a4a72;
+    --owner-corretora-soft:#f3e6f0;
+
+    --shadow: 0 1px 2px rgba(21,19,18,.06), 0 6px 16px rgba(21,19,18,.06);
     --radius: 10px;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#12181f;
-      --surface:#1a222b;
-      --surface-2:#212b35;
-      --surface-3:#2a3540;
-      --border:#31404c;
-      --text:#e9edf1;
-      --text-muted:#93a3b1;
-      --accent:#3fb8b0;
-      --accent-strong:#6fd2cb;
-      --accent-soft:#173432;
+      --bg:#121212;
+      --surface:#1a1a1a;
+      --surface-2:#222222;
+      --surface-3:#2c2c2c;
+      --border:#363636;
+      --text:#f1efeb;
+      --text-muted:#a39d92;
+
+      --accent:#FFBD4C;
+      --accent-strong:#ffd27a;
+      --accent-soft:#3a2f14;
+      --accent-solid:#FFBD4C;
+      --accent-solid-hover:#ffcb6e;
+      --on-accent-solid:#151312;
+
       --ok:#4fbf82;
       --ok-soft:#173726;
-      --warn:#e0a53d;
-      --warn-soft:#3a2e13;
+      --warn:#e08a4f;
+      --warn-soft:#3a2814;
       --danger:#e2685b;
       --danger-soft:#3a1e1a;
-      --owner-usadosbr:#3fb8b0;
-      --owner-usadosbr-soft:#173432;
-      --owner-c6:#a394d8;
-      --owner-c6-soft:#28213d;
-      --owner-corretora:#e0a53d;
-      --owner-corretora-soft:#3a2e13;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+
+      --owner-usadosbr:#FFBD4C;
+      --owner-usadosbr-soft:#3a2f14;
+      --owner-c6:#6db8ff;
+      --owner-c6-soft:#16283a;
+      --owner-corretora:#d9a8cf;
+      --owner-corretora-soft:#332230;
+
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.4);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#12181f;
-    --surface:#1a222b;
-    --surface-2:#212b35;
-    --surface-3:#2a3540;
-    --border:#31404c;
-    --text:#e9edf1;
-    --text-muted:#93a3b1;
-    --accent:#3fb8b0;
-    --accent-strong:#6fd2cb;
-    --accent-soft:#173432;
+    --bg:#121212;
+    --surface:#1a1a1a;
+    --surface-2:#222222;
+    --surface-3:#2c2c2c;
+    --border:#363636;
+    --text:#f1efeb;
+    --text-muted:#a39d92;
+
+    --accent:#FFBD4C;
+    --accent-strong:#ffd27a;
+    --accent-soft:#3a2f14;
+    --accent-solid:#FFBD4C;
+    --accent-solid-hover:#ffcb6e;
+    --on-accent-solid:#151312;
+
     --ok:#4fbf82;
     --ok-soft:#173726;
-    --warn:#e0a53d;
-    --warn-soft:#3a2e13;
+    --warn:#e08a4f;
+    --warn-soft:#3a2814;
     --danger:#e2685b;
     --danger-soft:#3a1e1a;
-    --owner-usadosbr:#3fb8b0;
-    --owner-usadosbr-soft:#173432;
-    --owner-c6:#a394d8;
-    --owner-c6-soft:#28213d;
-    --owner-corretora:#e0a53d;
-    --owner-corretora-soft:#3a2e13;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+
+    --owner-usadosbr:#FFBD4C;
+    --owner-usadosbr-soft:#3a2f14;
+    --owner-c6:#6db8ff;
+    --owner-c6-soft:#16283a;
+    --owner-corretora:#d9a8cf;
+    --owner-corretora-soft:#332230;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.4);
   }
 
   *{box-sizing:border-box;}
@@ -88,16 +109,22 @@
     -webkit-font-smoothing:antialiased;
   }
   h1,h2,h3{font-family:'Manrope', system-ui, sans-serif; text-wrap:balance; margin:0;}
-  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
 
   header.top{
     display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
-    padding:22px 28px 16px; border-bottom:1px solid var(--border);
+    padding:20px 28px 14px; border-bottom:1px solid var(--border);
     background:var(--surface);
   }
-  .title-block h1{font-size:22px; font-weight:800; letter-spacing:-.01em;}
-  .title-block p{margin:4px 0 0; color:var(--text-muted); font-size:13.5px; max-width:62ch;}
-  .top-actions{display:flex; gap:8px; flex-shrink:0;}
+  .title-block{display:flex; align-items:flex-start; gap:12px;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:8px; background:var(--on-accent-solid,#151312);
+    background:#151312; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Manrope',sans-serif; font-weight:800; color:var(--accent-solid); font-size:14px; margin-top:2px;
+  }
+  .title-block h1{font-size:19px; font-weight:800; letter-spacing:-.01em;}
+  .title-block p{margin:4px 0 0; color:var(--text-muted); font-size:13px; max-width:64ch;}
+  .top-actions{display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end;}
   button{
     font-family:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--border);
     background:var(--surface); color:var(--text); font-size:13.5px; font-weight:600;
@@ -105,14 +132,47 @@
   }
   button:hover{background:var(--surface-2);}
   button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
-  button.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
-  button.primary:hover{background:var(--accent-strong); border-color:var(--accent-strong);}
+  button.primary{background:var(--accent-solid); border-color:var(--accent-solid); color:var(--on-accent-solid);}
+  button.primary:hover{background:var(--accent-solid-hover); border-color:var(--accent-solid-hover);}
   button.ghost{background:transparent; border-color:transparent; color:var(--text-muted); padding:6px 8px;}
   button.ghost:hover{background:var(--surface-2); color:var(--text);}
   button.danger-text{color:var(--danger); background:transparent; border-color:transparent;}
   button.danger-text:hover{background:var(--danger-soft);}
+  button.icon-btn{padding:4px 7px; font-size:13px; line-height:1;}
 
-  .legend{display:flex; gap:14px; padding:10px 28px; flex-wrap:wrap; background:var(--surface); border-bottom:1px solid var(--border); font-size:12.5px; color:var(--text-muted);}
+  .stats-bar{
+    display:flex; gap:10px; padding:12px 28px; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap;
+  }
+  .stat-pill{
+    display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:100px; padding:6px 12px; font-size:12.5px; color:var(--text-muted);
+  }
+  .stat-pill b{font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--text); font-weight:600;}
+  .stat-pill.is-danger{background:var(--danger-soft); border-color:transparent;}
+  .stat-pill.is-danger b{color:var(--danger);}
+
+  .filters-bar{
+    display:flex; gap:10px; align-items:center; padding:12px 28px; background:var(--surface-2);
+    border-bottom:1px solid var(--border); flex-wrap:wrap;
+  }
+  .filters-bar input[type="search"]{
+    font-family:inherit; font-size:13px; padding:8px 12px; border-radius:100px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); min-width:220px; flex:1; max-width:320px;
+  }
+  .filters-bar select{
+    font-family:inherit; font-size:13px; padding:8px 10px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text);
+  }
+  .chip-toggle{
+    display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--text-muted);
+    border:1px solid var(--border); background:var(--surface); border-radius:100px; padding:7px 12px; cursor:pointer; user-select:none;
+  }
+  .chip-toggle input{accent-color:var(--danger);}
+  .chip-toggle.active{border-color:var(--danger); color:var(--danger); background:var(--danger-soft);}
+  .filters-clear{font-size:12px; color:var(--text-muted); background:transparent; border-color:transparent; padding:6px 8px;}
+  .filters-clear:hover{color:var(--text); background:var(--surface);}
+
+  .legend{display:flex; gap:14px; padding:9px 28px; flex-wrap:wrap; background:var(--surface); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-muted);}
   .legend span{display:inline-flex; align-items:center; gap:6px;}
   .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
 
@@ -121,8 +181,9 @@
   .column{
     width:264px; flex-shrink:0; display:flex; flex-direction:column;
     background:var(--surface-2); border:1px solid var(--border); border-radius:12px;
-    max-height:calc(100vh - 190px);
+    max-height:calc(100vh - 250px); transition:opacity .15s ease;
   }
+  .column.col-dim{opacity:.35;}
   .column.drag-over{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft);}
   .col-head{padding:12px 12px 10px; border-bottom:1px solid var(--border);}
   .col-head .owner-tag{margin-bottom:6px;}
@@ -143,15 +204,17 @@
   .card{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
     padding:11px 12px 10px; box-shadow:var(--shadow); cursor:grab; position:relative;
-    border-left:3px solid var(--owner-usadosbr);
+    border-left:3px solid var(--owner-usadosbr); transition:opacity .15s ease, outline-color .15s ease;
   }
   .card:active{cursor:grabbing;}
   .card.dragging{opacity:.4;}
+  .card.hidden-by-filter{display:none;}
   .card[data-owner="C6"]{border-left-color:var(--owner-c6);}
   .card[data-owner="Corretora"]{border-left-color:var(--owner-corretora);}
+  .card.overdue{outline:2px solid var(--danger); outline-offset:1px;}
   .card .name{font-weight:700; font-size:14px; margin-bottom:2px; text-wrap:balance;}
   .card .resp{font-size:12px; color:var(--text-muted); margin-bottom:8px;}
-  .card .row2{display:flex; align-items:center; justify-content:space-between; gap:6px;}
+  .card .row2{display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:wrap;}
   .card .date{font-size:11px; color:var(--text-muted);}
   .sla-chip{
     font-size:11px; font-weight:600; padding:2px 7px; border-radius:100px; white-space:nowrap;
@@ -164,17 +227,11 @@
   .card-actions{display:flex; justify-content:space-between; align-items:center; margin-top:9px; padding-top:8px; border-top:1px solid var(--border);}
   .step-btns{display:flex; gap:3px;}
   .step-btns button{padding:3px 6px; font-size:12px; line-height:1;}
-  .card .edit-btn{font-size:11px; padding:3px 7px;}
-
-  .add-col-card{
-    border:1px dashed var(--border); border-radius:var(--radius); background:transparent;
-    color:var(--text-muted); font-size:12.5px; padding:9px; width:100%; justify-content:center;
-  }
-  .add-col-card:hover{background:var(--surface); color:var(--text);}
+  .actions-right{display:flex; gap:2px;}
 
   /* modal */
   .overlay{
-    position:fixed; inset:0; background:rgba(10,15,20,.45); display:flex;
+    position:fixed; inset:0; background:rgba(10,10,10,.5); display:flex;
     align-items:center; justify-content:center; padding:20px; z-index:50;
   }
   .overlay[hidden]{display:none;}
@@ -182,6 +239,7 @@
     background:var(--surface); border-radius:14px; border:1px solid var(--border);
     width:100%; max-width:440px; max-height:86vh; overflow-y:auto; box-shadow:var(--shadow);
   }
+  .modal.modal-wide{max-width:620px;}
   .modal-head{display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid var(--border);}
   .modal-head h2{font-size:16px; font-weight:800;}
   .modal-body{padding:16px 18px; display:flex; flex-direction:column; gap:12px;}
@@ -198,28 +256,58 @@
   .sla-row input{width:64px; text-align:right;}
   .hint{font-size:11.5px; color:var(--text-muted); line-height:1.5;}
 
+  table.hist-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  table.hist-table th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted);
+    padding:6px 8px; border-bottom:1px solid var(--border); font-weight:600;
+  }
+  table.hist-table td{padding:7px 8px; border-bottom:1px solid var(--border); vertical-align:top;}
+  table.hist-table tr:last-child td{border-bottom:none;}
+  table.hist-table .status-tag{font-size:11px; font-weight:600; padding:2px 7px; border-radius:100px; white-space:nowrap; display:inline-block;}
+  .wrap-table{overflow-x:auto;}
+
   ::-webkit-scrollbar{height:10px; width:10px;}
   ::-webkit-scrollbar-thumb{background:var(--surface-3); border-radius:8px;}
 </style>
 
 <header class="top">
   <div class="title-block">
-    <h1>Jornada da Corretora</h1>
-    <p>Funil de onboarding Usadosbr × C6 — da reunião comercial ao treinamento da equipe. Arraste os cards entre as etapas ou use as setas.</p>
+    <div class="brand-mark">C6</div>
+    <div>
+      <h1>EGV Usadosbr — Jornada da Corretora</h1>
+      <p>Funil de onboarding Usadosbr × C6 — da reunião comercial ao treinamento e produção. Arraste os cards entre etapas, acompanhe SLA ideal x real e exporte o relatório.</p>
+    </div>
   </div>
   <div class="top-actions">
     <button class="ghost" id="btn-settings" title="Configurar SLA por etapa">⚙️ SLA</button>
+    <button class="ghost" id="btn-export" title="Exportar relatório CSV">⬇ Exportar CSV</button>
     <button class="primary" id="btn-new">+ Nova corretora</button>
   </div>
 </header>
+
+<div class="stats-bar" id="stats-bar"></div>
+
+<div class="filters-bar">
+  <input type="search" id="f-search" placeholder="Buscar corretora, responsável ou GP...">
+  <select id="f-owner">
+    <option value="all">Todos os responsáveis</option>
+    <option value="Usadosbr">Usadosbr</option>
+    <option value="C6">C6</option>
+    <option value="Corretora">Corretora</option>
+  </select>
+  <label class="chip-toggle" id="f-overdue-label">
+    <input type="checkbox" id="f-overdue"> Somente atrasadas
+  </label>
+  <button class="filters-clear" id="btn-clear-filters">Limpar filtros</button>
+</div>
 
 <div class="legend">
   <span><span class="owner-tag owner-usadosbr">Usadosbr</span> responsável pela etapa</span>
   <span><span class="owner-tag owner-c6">C6</span> responsável pela etapa</span>
   <span><span class="owner-tag owner-corretora">Corretora</span> responsável pela etapa</span>
   <span><span class="dot" style="background:var(--ok)"></span> dentro do SLA</span>
-  <span><span class="dot" style="background:var(--warn)"></span> perto do prazo</span>
-  <span><span class="dot" style="background:var(--danger)"></span> SLA estourado</span>
+  <span><span class="dot" style="background:var(--warn)"></span> vence hoje</span>
+  <span><span class="dot" style="background:var(--danger)"></span> SLA estourado (contorno vermelho)</span>
 </div>
 
 <main class="board-wrap">
@@ -257,7 +345,7 @@
       <button class="ghost" data-close="overlay-sla">✕</button>
     </div>
     <div class="modal-body">
-      <p class="hint">Dias-alvo que cada etapa deveria levar. Os cards ficam amarelos a partir de 1 dia do estouro, e vermelhos quando o prazo é ultrapassado. Contagem em dias corridos a partir da entrada na etapa. Use 0 para etapas contínuas sem prazo (ex: Produção).</p>
+      <p class="hint">Dias-alvo (SLA ideal) que cada etapa deveria levar. O SLA real é calculado automaticamente pelo log de entrada/saída de cada card. Cards acima do SLA ganham contorno vermelho. Use 0 para etapas contínuas sem prazo (ex: Produção).</p>
       <div class="sla-table" id="sla-table"></div>
     </div>
     <div class="modal-foot">
@@ -268,10 +356,30 @@
   </div>
 </div>
 
+<!-- History modal -->
+<div class="overlay" id="overlay-history" hidden>
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h2 id="history-modal-title">Histórico</h2>
+      <button class="ghost" data-close="overlay-history">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint">Log de etapas: data de entrada/saída, dias reais e SLA ideal de cada passagem desta corretora pelo funil.</p>
+      <div class="wrap-table">
+        <table class="hist-table" id="hist-table"></table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div style="flex:1"></div>
+      <button data-close="overlay-history">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
-  var STORAGE_KEY = "jornada-corretora-v1";
+  var STORAGE_KEY = "jornada-corretora-v2";
 
   var DEFAULT_STAGES = [
     {id:"reuniao",        name:"Reunião",                        owner:"C6",        sla:2},
@@ -290,14 +398,32 @@
 
   // Seed cards derived from the Usadosbr x C6 tracking sheet (broker onboarding funnel).
   var DEFAULT_CARDS = [
-    {id:"c1", corretora:"DNA", resp:"Danillo Nunes Andrade", gp:"Kelly Krepke", dataContratacao:"2026-07-11", stageId:"config-meta",   enteredStageAt:"2026-07-11"},
-    {id:"c2", corretora:"JM3D Corretora", resp:"Dirceia", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento", enteredStageAt:"2026-07-17"},
-    {id:"c3", corretora:"FMP", resp:"Fabiano", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento", enteredStageAt:"2026-07-17"},
-    {id:"c4", corretora:"JE Corretora", resp:"Renato", gp:"Kelly Krepke", dataContratacao:"2026-07-17", stageId:"reuniao", enteredStageAt:"2026-07-17"},
-    {id:"c5", corretora:"Distrital", resp:"—", gp:"Michelle", dataContratacao:"2026-07-17", stageId:"pagamento", enteredStageAt:"2026-07-17"},
-    {id:"c6", corretora:"Proven", resp:"Graziane", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento", enteredStageAt:"2026-07-18"},
-    {id:"c7", corretora:"BCM", resp:"Daniellem", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento", enteredStageAt:"2026-07-18"}
-  ];
+    {id:"c1", corretora:"DNA", resp:"Danillo Nunes Andrade", gp:"Kelly Krepke", dataContratacao:"2026-07-11", stageId:"config-meta"},
+    {id:"c2", corretora:"JM3D Corretora", resp:"Dirceia", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c3", corretora:"FMP", resp:"Fabiano", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c4", corretora:"JE Corretora", resp:"Renato", gp:"Kelly Krepke", dataContratacao:"2026-07-17", stageId:"reuniao"},
+    {id:"c5", corretora:"Distrital", resp:"—", gp:"Michelle", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c6", corretora:"Proven", resp:"Graziane", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"},
+    {id:"c7", corretora:"BCM", resp:"Daniellem", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"}
+  ].map(function(c){
+    c.history = [{stageId:c.stageId, enteredAt:c.dataContratacao, exitedAt:null}];
+    return c;
+  });
+
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+  function migrateCard(card){
+    if(!card.history || !card.history.length){
+      card.history = [{stageId:card.stageId, enteredAt: card.enteredStageAt || card.dataContratacao || todayISO(), exitedAt:null}];
+    }
+    var last = card.history[card.history.length-1];
+    if(last.stageId !== card.stageId){
+      // data drifted from an older schema — close it out and open the real current stage
+      last.exitedAt = last.exitedAt || todayISO();
+      card.history.push({stageId:card.stageId, enteredAt: todayISO(), exitedAt:null});
+    }
+    return card;
+  }
 
   function loadState(){
     try{
@@ -308,20 +434,37 @@
           if(!parsed.stages.some(function(s){return s.id==="producao";})){
             parsed.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0});
           }
+          parsed.cards.forEach(migrateCard);
           return parsed;
         }
       }
+      // first run on this browser: try to carry over the old v1 board if present
+      var legacyRaw = localStorage.getItem("jornada-corretora-v1");
+      if(legacyRaw){
+        var legacy = JSON.parse(legacyRaw);
+        if(legacy && legacy.stages && legacy.cards){
+          if(!legacy.stages.some(function(s){return s.id==="producao";})){
+            legacy.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0});
+          }
+          legacy.cards.forEach(migrateCard);
+          return legacy;
+        }
+      }
     }catch(e){}
-    return {stages: DEFAULT_STAGES.map(function(s){return Object.assign({}, s);}), cards: DEFAULT_CARDS.map(function(c){return Object.assign({}, c);})};
+    return {stages: DEFAULT_STAGES.map(function(s){return Object.assign({}, s);}), cards: DEFAULT_CARDS.map(function(c){return JSON.parse(JSON.stringify(c));})};
   }
   function saveState(){
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
   }
 
   var state = loadState();
+  saveState();
+
   var board = document.getElementById("board");
   var editingCardId = null;
+  var historyCardId = null;
   var dragCardId = null;
+  var filters = {search:"", owner:"all", overdueOnly:false};
 
   function stageById(id){ return state.stages.find(function(s){return s.id===id;}); }
   function daysBetween(fromISO, toDate){
@@ -339,50 +482,94 @@
     var p = iso.split("-");
     return p[2]+"/"+p[1]+"/"+p[0].slice(2);
   }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function activeEntry(card){ return card.history[card.history.length-1]; }
+  function cardRealDays(card, today){
+    var entry = activeEntry(card);
+    return daysBetween(entry.enteredAt, today);
+  }
+  function cardIsOverdue(card, today){
+    var stage = stageById(card.stageId);
+    if(!stage || stage.sla<=0) return false;
+    return cardRealDays(card, today) > stage.sla;
+  }
+  function cardMatchesFilters(card){
+    var stage = stageById(card.stageId);
+    if(filters.owner !== "all" && (!stage || stage.owner !== filters.owner)) return false;
+    if(filters.overdueOnly && !cardIsOverdue(card, new Date(new Date().setHours(0,0,0,0)))) return false;
+    if(filters.search){
+      var q = filters.search.toLowerCase();
+      var hay = [card.corretora, card.resp, card.gp].join(" ").toLowerCase();
+      if(hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  }
+
+  function renderStats(today){
+    var total = state.cards.length;
+    var overdue = state.cards.filter(function(c){return cardIsOverdue(c, today);}).length;
+    var producao = state.cards.filter(function(c){ var st=stageById(c.stageId); return st && st.sla<=0; }).length;
+    var bar = document.getElementById("stats-bar");
+    bar.innerHTML =
+      '<span class="stat-pill">Corretoras no funil <b>' + total + '</b></span>' +
+      '<span class="stat-pill' + (overdue>0?' is-danger':'') + '">Atrasadas (SLA estourado) <b>' + overdue + '</b></span>' +
+      '<span class="stat-pill">Em produção <b>' + producao + '</b></span>';
+  }
 
   function render(){
+    var today = new Date(); today.setHours(0,0,0,0);
+    renderStats(today);
     board.innerHTML = "";
-    var today = new Date();
-    today.setHours(0,0,0,0);
+
+    var anyFilterActive = !!filters.search || filters.owner!=="all" || filters.overdueOnly;
 
     state.stages.forEach(function(stage){
       var col = document.createElement("div");
       col.className = "column";
       col.dataset.stageId = stage.id;
 
+      var allInStage = state.cards.filter(function(c){return c.stageId===stage.id;});
+      var visibleInStage = allInStage.filter(cardMatchesFilters);
+      if(anyFilterActive && visibleInStage.length===0) col.classList.add("col-dim");
+
       var head = document.createElement("div");
       head.className = "col-head";
-      var cardsInStage = state.cards.filter(function(c){return c.stageId===stage.id;});
+      var countLabel = anyFilterActive ? (visibleInStage.length + " de " + allInStage.length) : String(allInStage.length);
       head.innerHTML =
         '<span class="owner-tag ' + ownerClass(stage.owner) + '">' + stage.owner + '</span>' +
         '<h3>' + stage.name + '</h3>' +
-        '<div class="col-meta"><span class="count">' + cardsInStage.length + ' corretora' + (cardsInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
+        '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
       col.appendChild(head);
 
       var body = document.createElement("div");
       body.className = "col-body";
 
-      if(cardsInStage.length === 0){
+      if(allInStage.length === 0){
         var empty = document.createElement("div");
         empty.className = "col-empty";
         empty.textContent = "Nenhum card aqui";
         body.appendChild(empty);
       }
 
-      cardsInStage.forEach(function(card){
-        var days = daysBetween(card.enteredStageAt, today);
+      allInStage.forEach(function(card){
+        var days = cardRealDays(card, today);
         var sla = stage.sla;
         var chipClass, chipText;
+        var overdue = false;
         if(sla <= 0){
           chipClass = "sla-neutral"; chipText = days + "d em produção";
         } else {
-          chipClass = "sla-ok"; chipText = days + "d nesta etapa";
-          if(days > sla){ chipClass = "sla-danger"; chipText = (days - sla) + "d atrasado"; }
-          else if(days === sla){ chipClass = "sla-warn"; chipText = "vence hoje"; }
+          chipClass = "sla-ok"; chipText = days + "d real · SLA " + sla + "d";
+          if(days > sla){ chipClass = "sla-danger"; chipText = days + "d real · " + (days - sla) + "d atrasado"; overdue = true; }
+          else if(days === sla){ chipClass = "sla-warn"; chipText = days + "d real · vence hoje"; }
         }
 
         var el = document.createElement("div");
-        el.className = "card";
+        el.className = "card" + (overdue ? " overdue" : "") + (cardMatchesFilters(card) ? "" : " hidden-by-filter");
         el.draggable = true;
         el.dataset.cardId = card.id;
         el.dataset.owner = stage.owner;
@@ -392,18 +579,21 @@
           '<div class="row2"><span class="date mono">contrato ' + fmtDate(card.dataContratacao) + '</span><span class="sla-chip ' + chipClass + '">' + chipText + '</span></div>' +
           '<div class="card-actions">' +
             '<div class="step-btns"></div>' +
-            '<button class="edit-btn ghost" data-edit="' + card.id + '">Editar</button>' +
+            '<div class="actions-right">' +
+              '<button class="icon-btn ghost" data-history="' + card.id + '" title="Ver histórico">🕒</button>' +
+              '<button class="icon-btn ghost" data-edit="' + card.id + '" title="Editar">✎</button>' +
+            '</div>' +
           '</div>';
 
         var stepBtns = el.querySelector(".step-btns");
         var idx = state.stages.findIndex(function(s){return s.id===stage.id;});
         var prevBtn = document.createElement("button");
-        prevBtn.className = "ghost"; prevBtn.textContent = "◂";
+        prevBtn.className = "ghost icon-btn"; prevBtn.textContent = "◂";
         prevBtn.title = "Etapa anterior";
         prevBtn.disabled = idx === 0;
         prevBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx-1].id); });
         var nextBtn = document.createElement("button");
-        nextBtn.className = "ghost"; nextBtn.textContent = "▸";
+        nextBtn.className = "ghost icon-btn"; nextBtn.textContent = "▸";
         nextBtn.title = "Próxima etapa";
         nextBtn.disabled = idx === state.stages.length-1;
         nextBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx+1].id); });
@@ -413,6 +603,10 @@
         el.querySelector("[data-edit]").addEventListener("click", function(e){
           e.stopPropagation();
           openCardModal(card.id);
+        });
+        el.querySelector("[data-history]").addEventListener("click", function(e){
+          e.stopPropagation();
+          openHistoryModal(card.id);
         });
 
         el.addEventListener("dragstart", function(e){
@@ -441,17 +635,14 @@
     });
   }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-    });
-  }
-
   function moveCard(cardId, newStageId){
     var card = state.cards.find(function(c){return c.id===cardId;});
     if(!card || card.stageId === newStageId) return;
+    var last = activeEntry(card);
+    var today = todayISO();
+    last.exitedAt = today;
+    card.history.push({stageId:newStageId, enteredAt: today, exitedAt:null});
     card.stageId = newStageId;
-    card.enteredStageAt = new Date().toISOString().slice(0,10);
     saveState();
     render();
   }
@@ -477,7 +668,7 @@
       document.getElementById("f-corretora").value = "";
       document.getElementById("f-resp").value = "";
       document.getElementById("f-gp").value = "";
-      document.getElementById("f-data").value = new Date().toISOString().slice(0,10);
+      document.getElementById("f-data").value = todayISO();
       stageSelect.value = state.stages[0].id;
       document.getElementById("btn-delete-card").hidden = true;
     }
@@ -489,17 +680,17 @@
     var name = document.getElementById("f-corretora").value.trim();
     if(!name){ document.getElementById("f-corretora").focus(); return; }
     var stageId = document.getElementById("f-stage").value;
-    var dataC = document.getElementById("f-data").value || new Date().toISOString().slice(0,10);
+    var dataC = document.getElementById("f-data").value || todayISO();
 
     if(editingCardId){
       var card = state.cards.find(function(c){return c.id===editingCardId;});
-      var stageChanged = card.stageId !== stageId;
       card.corretora = name;
       card.resp = document.getElementById("f-resp").value.trim();
       card.gp = document.getElementById("f-gp").value.trim();
       card.dataContratacao = dataC;
-      card.stageId = stageId;
-      if(stageChanged) card.enteredStageAt = new Date().toISOString().slice(0,10);
+      if(card.stageId !== stageId){
+        moveCard(card.id, stageId);
+      }
     } else {
       state.cards.push({
         id: "c" + Date.now(),
@@ -508,7 +699,7 @@
         gp: document.getElementById("f-gp").value.trim(),
         dataContratacao: dataC,
         stageId: stageId,
-        enteredStageAt: dataC
+        history: [{stageId: stageId, enteredAt: dataC, exitedAt: null}]
       });
     }
     saveState();
@@ -522,6 +713,39 @@
     render();
     overlayCard.hidden = true;
   });
+
+  // ---- History modal ----
+  var overlayHistory = document.getElementById("overlay-history");
+  function statusFor(stage, real, exited){
+    if(!stage || stage.sla<=0) return {text: exited ? "Sem prazo" : "Sem prazo · em andamento", cls:"sla-neutral"};
+    if(!exited) return real > stage.sla ? {text:"Atrasado · em andamento", cls:"sla-danger"} : {text:"Em andamento", cls:"sla-ok"};
+    return real > stage.sla ? {text:"Atrasado", cls:"sla-danger"} : {text:"Dentro do prazo", cls:"sla-ok"};
+  }
+  function openHistoryModal(cardId){
+    historyCardId = cardId;
+    var card = state.cards.find(function(c){return c.id===cardId;});
+    if(!card) return;
+    document.getElementById("history-modal-title").textContent = "Histórico — " + card.corretora;
+    var today = new Date(); today.setHours(0,0,0,0);
+    var rows = card.history.map(function(h){
+      var stage = stageById(h.stageId);
+      var endRef = h.exitedAt ? new Date(h.exitedAt + "T00:00:00") : today;
+      var real = daysBetween(h.enteredAt, endRef);
+      var st = statusFor(stage, real, h.exitedAt);
+      return '<tr>' +
+        '<td>' + escapeHtml(stage ? stage.name : h.stageId) + '</td>' +
+        '<td class="mono">' + fmtDate(h.enteredAt) + '</td>' +
+        '<td class="mono">' + (h.exitedAt ? fmtDate(h.exitedAt) : 'Em andamento') + '</td>' +
+        '<td class="mono">' + real + 'd</td>' +
+        '<td class="mono">' + (stage && stage.sla>0 ? stage.sla + 'd' : '—') + '</td>' +
+        '<td><span class="status-tag ' + st.cls + '">' + st.text + '</span></td>' +
+      '</tr>';
+    }).join("");
+    document.getElementById("hist-table").innerHTML =
+      '<thead><tr><th>Etapa</th><th>Entrada</th><th>Saída</th><th>Dias reais</th><th>SLA ideal</th><th>Status</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody>';
+    overlayHistory.hidden = false;
+  }
 
   // ---- SLA modal ----
   var overlaySla = document.getElementById("overlay-sla");
@@ -565,6 +789,85 @@
   });
   document.querySelectorAll(".overlay").forEach(function(ov){
     ov.addEventListener("click", function(e){ if(e.target === ov) ov.hidden = true; });
+  });
+
+  // ---- Filters ----
+  document.getElementById("f-search").addEventListener("input", function(e){
+    filters.search = e.target.value.trim();
+    render();
+  });
+  document.getElementById("f-owner").addEventListener("change", function(e){
+    filters.owner = e.target.value;
+    render();
+  });
+  var overdueCheckbox = document.getElementById("f-overdue");
+  var overdueLabel = document.getElementById("f-overdue-label");
+  overdueCheckbox.addEventListener("change", function(e){
+    filters.overdueOnly = e.target.checked;
+    overdueLabel.classList.toggle("active", filters.overdueOnly);
+    render();
+  });
+  document.getElementById("btn-clear-filters").addEventListener("click", function(){
+    filters = {search:"", owner:"all", overdueOnly:false};
+    document.getElementById("f-search").value = "";
+    document.getElementById("f-owner").value = "all";
+    overdueCheckbox.checked = false;
+    overdueLabel.classList.remove("active");
+    render();
+  });
+
+  // ---- CSV export (relatório: SLA ideal x real, por etapa, com log completo) ----
+  function csvEscape(v){
+    v = String(v == null ? "" : v);
+    if(/[";\n]/.test(v)) return '"' + v.replace(/"/g,'""') + '"';
+    return v;
+  }
+  function buildCSV(){
+    var today = new Date(); today.setHours(0,0,0,0);
+    var rows = [["Corretora","Responsável","Gerente de Parceria","Data de Contratação","Etapa","Responsável pela Etapa","Data de Entrada","Data de Saída","Dias Reais","SLA Ideal (dias)","Status"]];
+    state.cards.forEach(function(card){
+      card.history.forEach(function(h){
+        var stage = stageById(h.stageId);
+        var endRef = h.exitedAt ? new Date(h.exitedAt + "T00:00:00") : today;
+        var real = daysBetween(h.enteredAt, endRef);
+        var st = statusFor(stage, real, h.exitedAt);
+        rows.push([
+          card.corretora, card.resp || "", card.gp || "", fmtDate(card.dataContratacao),
+          stage ? stage.name : h.stageId, stage ? stage.owner : "",
+          fmtDate(h.enteredAt), h.exitedAt ? fmtDate(h.exitedAt) : "Em andamento",
+          String(real), (stage && stage.sla>0) ? String(stage.sla) : "—", st.text
+        ]);
+      });
+    });
+    var sep = ";";
+    var csv = rows.map(function(r){ return r.map(csvEscape).join(sep); }).join("\r\n");
+    return "﻿" + csv;
+  }
+  document.getElementById("btn-export").addEventListener("click", async function(){
+    var btn = this;
+    var originalLabel = btn.textContent;
+    var downloads = null;
+    try{
+      if(window.claude && typeof window.claude.use === "function"){
+        downloads = await window.claude.use("downloads");
+      }
+    }catch(e){ downloads = null; }
+    if(!downloads){
+      alert("A exportação de arquivo não está disponível nesta visualização do artefato.");
+      return;
+    }
+    var csv = buildCSV();
+    var stamp = todayISO();
+    btn.disabled = true; btn.textContent = "Exportando...";
+    try{
+      await downloads.save({filename: "egv-usadosbr-jornada-corretora-" + stamp + ".csv", data: csv});
+    }catch(err){
+      if(!err || err.code !== "declined"){
+        alert("Não foi possível salvar o CSV agora. Tente novamente.");
+      }
+    }finally{
+      btn.disabled = false; btn.textContent = originalLabel;
+    }
   });
 
   render();
