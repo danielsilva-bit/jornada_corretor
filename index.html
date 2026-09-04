@@ -122,14 +122,15 @@
     padding:20px 28px 14px; border-bottom:1px solid var(--border);
     background:var(--surface);
   }
-  .title-block{display:flex; align-items:flex-start; gap:12px;}
+  .title-block{display:flex; align-items:flex-start; gap:12px; flex:1; min-width:0;}
+  .title-text{flex:1; min-width:0;}
   .brand-mark{
     width:34px; height:34px; border-radius:8px; background:#151312;
     flex-shrink:0; display:flex; align-items:center; justify-content:center;
     font-family:'Manrope',sans-serif; font-weight:800; color:var(--accent-solid); font-size:14px; margin-top:2px;
   }
   .title-block h1{font-size:19px; font-weight:800; letter-spacing:-.01em;}
-  .title-block p{margin:4px 0 0; color:var(--text-muted); font-size:13px; max-width:64ch;}
+  .title-block p{margin:4px 0 0; color:var(--text-muted); font-size:13px; max-width:none;}
   .top-actions{display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end;}
   button{
     font-family:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--border);
@@ -142,6 +143,7 @@
   button.primary:hover{background:var(--accent-solid-hover); border-color:var(--accent-solid-hover);}
   button.ghost{background:transparent; border-color:transparent; color:var(--text-muted); padding:6px 8px;}
   button.ghost:hover{background:var(--surface-2); color:var(--text);}
+  button.ghost.active-toggle{background:var(--accent-soft); color:var(--accent-strong); border-color:transparent;}
   button.danger-text{color:var(--danger); background:transparent; border-color:transparent;}
   button.danger-text:hover{background:var(--danger-soft);}
   button.icon-btn{padding:4px 7px; font-size:13px; line-height:1;}
@@ -215,6 +217,29 @@
 
   main.board-wrap{padding:20px 28px 40px; overflow-x:auto;}
   .board{display:flex; gap:14px; min-width:max-content;}
+
+  .group-bar{display:flex; gap:14px; min-width:max-content; margin-bottom:10px;}
+  .group-bar[hidden]{display:none;}
+  .group-cell{
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--surface-3); border:1px solid var(--border); border-bottom:3px solid var(--accent-solid);
+    border-radius:8px; padding:7px 12px; font-size:12.5px; font-weight:700;
+  }
+  .group-cell .group-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .group-cell .group-count{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11.5px; color:var(--text-muted);
+    white-space:nowrap;
+  }
+  .group-cell .group-toggle{
+    flex-shrink:0; width:20px; height:20px; padding:0; border-radius:5px; font-size:13px;
+    line-height:1; display:flex; align-items:center; justify-content:center;
+  }
+  .group-cell.is-collapsed{
+    flex-direction:column; justify-content:center; align-items:center; width:60px; padding:8px 4px; gap:6px;
+  }
+  .group-cell.is-collapsed .group-name{
+    writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; max-height:110px;
+  }
   .column{
     width:264px; flex-shrink:0; display:flex; flex-direction:column;
     background:var(--surface-2); border:1px solid var(--border); border-radius:12px;
@@ -222,6 +247,14 @@
   }
   .column.col-dim{opacity:.35;}
   .column.drag-over{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft);}
+  .column.collapsed{
+    width:60px; align-items:center; justify-content:flex-start; gap:8px; padding:10px 4px; cursor:pointer;
+  }
+  .column.collapsed .group-name{
+    writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; font-size:12px; font-weight:700; max-height:150px;
+  }
+  .column.collapsed .group-count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted);}
+  .column.collapsed .group-toggle{width:20px; height:20px; padding:0; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center;}
   .col-head{padding:12px 12px 10px; border-bottom:1px solid var(--border);}
   .col-head .owner-tag{margin-bottom:6px;}
   .col-head h3{font-size:13px; font-weight:700; line-height:1.3;}
@@ -316,12 +349,13 @@
 <header class="top">
   <div class="title-block">
     <div class="brand-mark">C6</div>
-    <div>
+    <div class="title-text">
       <h1>EGV Usadosbr — Jornada da Corretora</h1>
       <p>Funil de onboarding Usadosbr × C6 — da reunião comercial ao treinamento e produção. Arraste os cards entre etapas, acompanhe SLA ideal x real e exporte o relatório.</p>
     </div>
   </div>
   <div class="top-actions">
+    <button class="ghost" id="btn-group" title="Agrupar colunas por fase do funil">⊞ Agrupar</button>
     <button class="ghost" id="btn-settings" title="Configurar SLA por etapa">⚙️ SLA</button>
     <button class="ghost" id="btn-export" title="Exportar relatório CSV">⬇ Exportar CSV</button>
     <button class="primary" id="btn-new">+ Nova corretora</button>
@@ -359,6 +393,7 @@
 </div>
 
 <main class="board-wrap" id="board-wrap">
+  <div class="group-bar" id="group-bar" hidden></div>
   <div class="board" id="board"></div>
 </main>
 
@@ -465,6 +500,17 @@
     {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0}
   ];
 
+  // Fases do funil, para o botão "Agrupar" (colunas mescladas ao estilo Excel)
+  var STAGE_GROUPS = [
+    {id:"kickoff",      name:"Kickoff",              stageIds:["reuniao","formalizacao","pagamento"]},
+    {id:"ativacao",     name:"Ativação",             stageIds:["numero","config-meta","ativacao-meta","perfil-crm","template"]},
+    {id:"capacitacao",  name:"Capacitação e Start",  stageIds:["envio-base","disparo-base","treinamento","producao"]}
+  ];
+  var COL_W = 264, COL_GAP = 14, COLLAPSED_W = 60;
+  function groupForStage(stageId){
+    return STAGE_GROUPS.find(function(g){ return g.stageIds.indexOf(stageId) !== -1; }) || null;
+  }
+
   // Seed cards derived from the Usadosbr x C6 tracking sheet (broker onboarding funnel).
   var DEFAULT_CARDS = [
     {id:"c1", corretora:"DNA", resp:"Danillo Nunes Andrade", gp:"Kelly Krepke", dataContratacao:"2026-07-11", stageId:"config-meta"},
@@ -527,6 +573,7 @@
   }
 
   var state = loadState();
+  if(!state.grouping) state.grouping = {enabled:false, collapsed:{}};
   saveState();
 
   var board = document.getElementById("board");
@@ -666,15 +713,79 @@
       '<span class="stat-pill">Em produção <b>' + producao + '</b></span>';
   }
 
+  function groupCount(group){
+    return state.cards.filter(function(c){ return group.stageIds.indexOf(c.stageId) !== -1; }).length;
+  }
+
+  function renderGroupBar(){
+    var bar = document.getElementById("group-bar");
+    if(!state.grouping.enabled){ bar.hidden = true; bar.innerHTML = ""; return; }
+    bar.hidden = false;
+    bar.innerHTML = "";
+    STAGE_GROUPS.forEach(function(group){
+      var collapsed = !!state.grouping.collapsed[group.id];
+      var n = group.stageIds.length;
+      var cell = document.createElement("div");
+      cell.className = "group-cell" + (collapsed ? " is-collapsed" : "");
+      var count = groupCount(group);
+      if(collapsed){
+        cell.style.width = COLLAPSED_W + "px";
+        cell.innerHTML =
+          '<button class="ghost group-toggle" title="Expandir fase" data-toggle-group="'+group.id+'">+</button>' +
+          '<span class="group-name">' + escapeHtml(group.name) + '</span>' +
+          '<span class="group-count">' + count + '</span>';
+      } else {
+        cell.style.width = (n*COL_W + (n-1)*COL_GAP) + "px";
+        cell.innerHTML =
+          '<span class="group-name">' + escapeHtml(group.name) + '</span>' +
+          '<span class="group-count">' + count + ' corretora' + (count===1?'':'s') + '</span>' +
+          '<button class="ghost group-toggle" title="Recolher fase" data-toggle-group="'+group.id+'">−</button>';
+      }
+      cell.querySelector("[data-toggle-group]").addEventListener("click", function(e){
+        e.stopPropagation();
+        state.grouping.collapsed[group.id] = !collapsed;
+        saveState();
+        render();
+      });
+      bar.appendChild(cell);
+    });
+  }
+
   function render(){
     var today = new Date(); today.setHours(0,0,0,0);
     renderStats(today);
     renderDashboard();
+    renderGroupBar();
     board.innerHTML = "";
 
     var anyFilterActive = !!filters.search || filters.owner!=="all" || filters.overdueOnly;
+    var collapsedGroupsShown = {};
 
     state.stages.forEach(function(stage){
+      if(state.grouping.enabled){
+        var grp = groupForStage(stage.id);
+        if(grp && state.grouping.collapsed[grp.id]){
+          if(collapsedGroupsShown[grp.id]) return; // already rendered a placeholder for this group
+          collapsedGroupsShown[grp.id] = true;
+          var placeholder = document.createElement("div");
+          placeholder.className = "column collapsed";
+          placeholder.title = "Expandir " + grp.name;
+          var n = groupCount(grp);
+          placeholder.innerHTML =
+            '<button class="ghost group-toggle" title="Expandir fase" data-toggle-group="'+grp.id+'">+</button>' +
+            '<span class="group-name">' + escapeHtml(grp.name) + '</span>' +
+            '<span class="group-count">' + n + '</span>';
+          placeholder.querySelector("[data-toggle-group]").addEventListener("click", function(e){
+            e.stopPropagation();
+            state.grouping.collapsed[grp.id] = false;
+            saveState();
+            render();
+          });
+          board.appendChild(placeholder);
+          return;
+        }
+      }
+
       var col = document.createElement("div");
       col.className = "column";
       col.dataset.stageId = stage.id;
@@ -825,6 +936,19 @@
     }
     overlayCard.hidden = false;
   }
+
+  function updateGroupBtn(){
+    var btn = document.getElementById("btn-group");
+    btn.textContent = state.grouping.enabled ? "⊟ Desagrupar" : "⊞ Agrupar";
+    btn.classList.toggle("active-toggle", state.grouping.enabled);
+  }
+  document.getElementById("btn-group").addEventListener("click", function(){
+    state.grouping.enabled = !state.grouping.enabled;
+    saveState();
+    updateGroupBtn();
+    render();
+  });
+  updateGroupBtn();
 
   document.getElementById("btn-new").addEventListener("click", function(){ openCardModal(null); });
   document.getElementById("btn-save-card").addEventListener("click", function(){
