@@ -18,12 +18,14 @@
     --accent-solid-hover:#e8ac3d;
     --on-accent-solid:#151312;
 
-    --ok:#1f8a4c;
-    --ok-soft:#e2f3e9;
-    --warn:#c15b1f;
-    --warn-soft:#faead9;
-    --danger:#c0392b;
-    --danger-soft:#fbe6e2;
+    --ok:#157a15;
+    --ok-soft:#e3f6e3;
+    --warn:#a6580a;
+    --warn-soft:#fff1db;
+    --danger:#b3261e;
+    --danger-soft:#fbe4e4;
+    --chart-tick:#898781;
+    --chart-grid:#e5e2da;
 
     --owner-usadosbr:#8a6208;
     --owner-usadosbr-soft:#fbead0;
@@ -52,12 +54,14 @@
       --accent-solid-hover:#ffcb6e;
       --on-accent-solid:#151312;
 
-      --ok:#4fbf82;
-      --ok-soft:#173726;
-      --warn:#e08a4f;
-      --warn-soft:#3a2814;
-      --danger:#e2685b;
-      --danger-soft:#3a1e1a;
+      --ok:#4ade80;
+      --ok-soft:#123a1c;
+      --warn:#fbbf24;
+      --warn-soft:#3a2c0c;
+      --danger:#f87171;
+      --danger-soft:#3a1616;
+      --chart-tick:#a39d92;
+      --chart-grid:#333333;
 
       --owner-usadosbr:#FFBD4C;
       --owner-usadosbr-soft:#3a2f14;
@@ -140,9 +144,40 @@
   button.danger-text:hover{background:var(--danger-soft);}
   button.icon-btn{padding:4px 7px; font-size:13px; line-height:1;}
 
+  .tabs-bar{
+    display:flex; gap:6px; padding:10px 28px 0; background:var(--surface);
+  }
+  .tab-btn{
+    border:1px solid var(--border); border-bottom:none; background:var(--surface-2); color:var(--text-muted);
+    padding:8px 16px 9px; border-radius:8px 8px 0 0; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  .tab-btn.active{background:var(--surface); color:var(--text); position:relative;}
+  .tab-btn.active::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:var(--surface);}
+
   .stats-bar{
     display:flex; gap:10px; padding:12px 28px; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap;
   }
+  .dash-wrap{padding:20px 28px 40px; display:none; flex-direction:column; gap:20px;}
+  .dash-wrap.active{display:flex;}
+  .board-and-filters{display:contents;}
+  .board-and-filters.dash-hidden{display:none;}
+  .chart-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px;
+  }
+  .chart-card h2{font-size:14px; font-weight:800; margin-bottom:2px;}
+  .chart-card .chart-sub{font-size:12px; color:var(--text-muted); margin-bottom:14px;}
+  .chart-legend{display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--text-muted); margin-top:10px;}
+  .chart-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .chart-legend .swatch{width:10px; height:10px; border-radius:2px; display:inline-block;}
+  .chart-legend .tick-swatch{width:2px; height:12px; background:var(--chart-tick); display:inline-block;}
+  .dash-table-wrap{overflow-x:auto;}
+  table.dash-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  table.dash-table th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted);
+    padding:7px 10px; border-bottom:1px solid var(--border); font-weight:600;
+  }
+  table.dash-table td{padding:8px 10px; border-bottom:1px solid var(--border);}
+  table.dash-table tr:last-child td{border-bottom:none;}
   .stat-pill{
     display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border);
     border-radius:100px; padding:6px 12px; font-size:12.5px; color:var(--text-muted);
@@ -285,9 +320,14 @@
   </div>
 </header>
 
+<div class="tabs-bar">
+  <button class="tab-btn active" id="tab-quadro" data-tab="quadro">Quadro</button>
+  <button class="tab-btn" id="tab-dashboard" data-tab="dashboard">Dashboard SLA</button>
+</div>
+
 <div class="stats-bar" id="stats-bar"></div>
 
-<div class="filters-bar">
+<div class="filters-bar" id="board-filters">
   <input type="search" id="f-search" placeholder="Buscar corretora, responsável ou GP...">
   <select id="f-owner">
     <option value="all">Todos os responsáveis</option>
@@ -301,7 +341,7 @@
   <button class="filters-clear" id="btn-clear-filters">Limpar filtros</button>
 </div>
 
-<div class="legend">
+<div class="legend" id="board-legend">
   <span><span class="owner-tag owner-usadosbr">Usadosbr</span> responsável pela etapa</span>
   <span><span class="owner-tag owner-c6">C6</span> responsável pela etapa</span>
   <span><span class="owner-tag owner-corretora">Corretora</span> responsável pela etapa</span>
@@ -310,9 +350,29 @@
   <span><span class="dot" style="background:var(--danger)"></span> SLA estourado (contorno vermelho)</span>
 </div>
 
-<main class="board-wrap">
+<main class="board-wrap" id="board-wrap">
   <div class="board" id="board"></div>
 </main>
+
+<div class="dash-wrap" id="dash-wrap">
+  <div class="chart-card">
+    <h2>SLA ideal x real por etapa</h2>
+    <p class="chart-sub">Barra = média de dias reais no funil (contando etapas concluídas e em andamento) · traço cinza = SLA ideal (meta). Passe o mouse sobre uma barra para ver os detalhes.</p>
+    <svg id="sla-svg" role="img" aria-label="Gráfico de SLA ideal versus real por etapa"></svg>
+    <div class="chart-legend">
+      <span><span class="swatch" style="background:var(--ok)"></span> dentro do SLA</span>
+      <span><span class="swatch" style="background:var(--danger)"></span> acima do SLA</span>
+      <span><span class="tick-swatch"></span> SLA ideal (meta)</span>
+    </div>
+  </div>
+  <div class="chart-card">
+    <h2>Tabela resumo</h2>
+    <p class="chart-sub">Mesmos números do gráfico, em formato de tabela.</p>
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="dash-table"></table>
+    </div>
+  </div>
+</div>
 
 <!-- Card modal -->
 <div class="overlay" id="overlay-card" hidden>
@@ -509,6 +569,83 @@
     return true;
   }
 
+  function computeStageStats(){
+    var today = new Date(); today.setHours(0,0,0,0);
+    return state.stages.map(function(stage){
+      var entries = [];
+      state.cards.forEach(function(c){
+        c.history.forEach(function(h){
+          if(h.stageId === stage.id){
+            var endRef = h.exitedAt ? new Date(h.exitedAt + "T00:00:00") : today;
+            entries.push(daysBetween(h.enteredAt, endRef));
+          }
+        });
+      });
+      var avg = entries.length ? (entries.reduce(function(a,b){return a+b;},0) / entries.length) : 0;
+      return {stage: stage, avg: avg, count: entries.length};
+    });
+  }
+
+  function renderDashboard(){
+    var stats = computeStageStats();
+    var leftW=210, chartW=440, rightPad=54, rowH=30, barH=14, topPad=10, bottomPad=26;
+    var maxVal = Math.max.apply(null, stats.map(function(s){return Math.max(s.avg, s.stage.sla);}).concat([2]));
+    maxVal = Math.ceil(maxVal*1.15) || 2;
+    var totalW = leftW+chartW+rightPad;
+    var totalH = topPad + stats.length*rowH + bottomPad;
+    function xScale(v){ return (v/maxVal)*chartW; }
+
+    var rows = stats.map(function(s, i){
+      var y = topPad + i*rowH;
+      var barColor = s.stage.sla<=0 ? "var(--accent-solid)" : (s.avg > s.stage.sla ? "var(--danger)" : "var(--ok)");
+      var barW = s.count ? Math.max(2, xScale(s.avg)) : 0;
+      var label = escapeHtml(s.stage.name);
+      var tickX = leftW + xScale(s.stage.sla);
+      var tick = s.stage.sla>0 ? '<line x1="'+tickX+'" y1="'+(y-3)+'" x2="'+tickX+'" y2="'+(y+barH+3)+'" stroke="var(--chart-tick)" stroke-width="2"/>' : '';
+      var valueLabel = s.count ? (Math.round(s.avg*10)/10) + 'd' : 'sem dados';
+      var titleTxt = escapeHtml(s.stage.name) + ': ' + (s.count ? valueLabel + ' reais' : 'nenhuma passagem ainda') + ' (SLA ' + (s.stage.sla>0 ? s.stage.sla+'d' : 'sem prazo') + ', ' + s.count + ' passagens)';
+      var barRect = barW ? '<rect x="'+leftW+'" y="'+y+'" width="'+barW+'" height="'+barH+'" rx="4" fill="'+barColor+'"><title>'+titleTxt+'</title></rect>' : '<rect x="'+leftW+'" y="'+y+'" width="1" height="'+barH+'" fill="var(--chart-grid)"><title>'+titleTxt+'</title></rect>';
+      return '<g>' +
+        '<text x="0" y="'+(y+barH/2+4)+'" font-size="10.5" style="fill:var(--text-muted)" font-family="IBM Plex Sans, sans-serif">'+label+'</text>' +
+        barRect +
+        tick +
+        '<text x="'+(leftW+Math.max(barW,1)+8)+'" y="'+(y+barH/2+4)+'" font-size="10.5" style="fill:var(--text-muted)" font-family="IBM Plex Mono, monospace">'+valueLabel+'</text>' +
+      '</g>';
+    }).join("");
+
+    var axisY = topPad + stats.length*rowH + 6;
+    var ticksCount = 4;
+    var axisTicks = "";
+    for(var t=0; t<=ticksCount; t++){
+      var v = Math.round((maxVal/ticksCount)*t);
+      var x = leftW + xScale(v);
+      axisTicks += '<line x1="'+x+'" y1="'+topPad+'" x2="'+x+'" y2="'+(axisY-6)+'" stroke="var(--chart-grid)" stroke-width="1"/>';
+      axisTicks += '<text x="'+x+'" y="'+(axisY+8)+'" font-size="10" text-anchor="middle" style="fill:var(--text-muted)" font-family="IBM Plex Mono, monospace">'+v+'d</text>';
+    }
+
+    var svg = document.getElementById("sla-svg");
+    svg.setAttribute("viewBox", "0 0 " + totalW + " " + totalH);
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", totalH);
+    svg.innerHTML = axisTicks + rows;
+
+    var tbody = stats.map(function(s){
+      var status = s.stage.sla<=0 ? "Sem prazo" : (s.avg > s.stage.sla ? "Acima do SLA" : "Dentro do SLA");
+      var cls = s.stage.sla<=0 ? "sla-neutral" : (s.avg > s.stage.sla ? "sla-danger" : "sla-ok");
+      return '<tr>' +
+        '<td>'+escapeHtml(s.stage.name)+'</td>' +
+        '<td><span class="owner-tag '+ownerClass(s.stage.owner)+'">'+s.stage.owner+'</span></td>' +
+        '<td class="mono">'+(s.stage.sla>0 ? s.stage.sla+'d' : '—')+'</td>' +
+        '<td class="mono">'+(s.count ? (Math.round(s.avg*10)/10)+'d' : '—')+'</td>' +
+        '<td class="mono">'+s.count+'</td>' +
+        '<td><span class="sla-chip '+cls+'">'+status+'</span></td>' +
+      '</tr>';
+    }).join("");
+    document.getElementById("dash-table").innerHTML =
+      '<thead><tr><th>Etapa</th><th>Responsável</th><th>SLA ideal</th><th>SLA real (média)</th><th>Passagens</th><th>Status</th></tr></thead>' +
+      '<tbody>'+tbody+'</tbody>';
+  }
+
   function renderStats(today){
     var total = state.cards.length;
     var overdue = state.cards.filter(function(c){return cardIsOverdue(c, today);}).length;
@@ -523,6 +660,7 @@
   function render(){
     var today = new Date(); today.setHours(0,0,0,0);
     renderStats(today);
+    renderDashboard();
     board.innerHTML = "";
 
     var anyFilterActive = !!filters.search || filters.owner!=="all" || filters.overdueOnly;
@@ -790,6 +928,26 @@
   document.querySelectorAll(".overlay").forEach(function(ov){
     ov.addEventListener("click", function(e){ if(e.target === ov) ov.hidden = true; });
   });
+
+  // ---- Tabs ----
+  var tabQuadro = document.getElementById("tab-quadro");
+  var tabDashboard = document.getElementById("tab-dashboard");
+  var boardFiltersEl = document.getElementById("board-filters");
+  var boardLegendEl = document.getElementById("board-legend");
+  var boardWrapEl = document.getElementById("board-wrap");
+  var dashWrapEl = document.getElementById("dash-wrap");
+  function setTab(tab){
+    var isDash = tab === "dashboard";
+    tabQuadro.classList.toggle("active", !isDash);
+    tabDashboard.classList.toggle("active", isDash);
+    boardFiltersEl.style.display = isDash ? "none" : "";
+    boardLegendEl.style.display = isDash ? "none" : "";
+    boardWrapEl.style.display = isDash ? "none" : "";
+    dashWrapEl.classList.toggle("active", isDash);
+    if(isDash) renderDashboard();
+  }
+  tabQuadro.addEventListener("click", function(){ setTab("quadro"); });
+  tabDashboard.addEventListener("click", function(){ setTab("dashboard"); });
 
   // ---- Filters ----
   document.getElementById("f-search").addEventListener("input", function(e){
