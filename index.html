@@ -485,7 +485,7 @@
 <script>
 (function(){
   "use strict";
-  var STORAGE_KEY = "jornada-corretora-v2";
+  var STORAGE_KEY = "jornada-corretora-v3";
 
   var DEFAULT_STAGES = [
     {id:"reuniao",        name:"Reunião",                        owner:"C6",        sla:2},
@@ -551,18 +551,10 @@
           return parsed;
         }
       }
-      // first run on this browser: try to carry over the old v1 board if present
-      var legacyRaw = localStorage.getItem("jornada-corretora-v1");
-      if(legacyRaw){
-        var legacy = JSON.parse(legacyRaw);
-        if(legacy && legacy.stages && legacy.cards){
-          if(!legacy.stages.some(function(s){return s.id==="producao";})){
-            legacy.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0});
-          }
-          legacy.cards.forEach(migrateCard);
-          return legacy;
-        }
-      }
+      // Nao migra estados salvos de versoes anteriores (v1/v2): eles podem conter
+      // dados de demonstracao ficticios de uma versao antiga. A partir daqui, todo
+      // navegador comeca com os dados reais das corretoras (DEFAULT_CARDS) e volta
+      // a salvar normalmente a partir da primeira alteracao feita no quadro.
     }catch(e){}
     return {stages: DEFAULT_STAGES.map(function(s){return Object.assign({}, s);}), cards: DEFAULT_CARDS.map(function(c){return JSON.parse(JSON.stringify(c));})};
   }
