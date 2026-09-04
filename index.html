@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Feirão Setembro 2026 — Lojas com estoque desatualizado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  :root {
+    --ink:#14151A; --paper:#EEF1F5; --card:#FFFFFF; --line:#DFE3E9; --muted:#6B7280;
+    --brand:#0B0C10; --gold:#A9822C; --gold-bg:#FBF3DF;
+    --green:#2E8B57; --green-bg:#E7F4EC;
+    --gray:#8A8F98; --gray-bg:#EDEEF0;
+    --steel:#33517A; --steel-bg:#E7EDF6;
+
+    --bg: var(--paper);
+    --card-bg: var(--card);
+    --border: var(--line);
+    --text: var(--ink);
+    --primary: var(--steel);
+    --primary-dark: #24395a;
+    --danger: #B23A48;
+    --success: var(--green);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    background: var(--brand);
+    color: #fff;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -.01em;
+  }
+  #user-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #B0B5BE;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  #user-box b { color: #fff; }
+  #user-box button {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 6px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+  }
+  #user-box button:hover { background: rgba(255,255,255,.08); }
+
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  #login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 32px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    max-width: 420px;
+    margin: 60px auto;
+  }
+  #login-screen .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  #login-screen h2 { margin-top: 0; font-family: 'Space Grotesk', sans-serif; }
+  #login-screen p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  #login-screen input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+  #login-screen input:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(11,12,16,.08);
+  }
+  #login-screen button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: var(--brand);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  #login-screen button:hover { opacity: .88; }
+  #login-screen button:disabled { opacity: .6; cursor: not-allowed; }
+  #login-status {
+    margin-top: 14px;
+    font-size: 13px;
+    display: none;
+  }
+  #login-status.error { color: var(--danger); display: block; }
+  #login-status.info { color: var(--muted); display: block; }
+
+  #dashboard { display: none; }
+
+  .toolbar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    box-shadow: 0 1px 2px rgba(20,21,26,.04);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .field input, .field select {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    min-width: 160px;
+    background: white;
+  }
+  #search-field input { min-width: 240px; }
+
+  .actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--brand); color: white; }
+  .btn-primary:hover { opacity: .88; }
+  .btn-secondary { background: #fff; color: var(--brand); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--gray-bg); }
+  .btn-gold { background: var(--gold); color: #1A1200; }
+  .btn-gold:hover { opacity: .88; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { opacity: .88; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  #status-msg {
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: none;
+  }
+  #status-msg.success { background: var(--green-bg); color: var(--green); display: block; }
+  #status-msg.error { background: #FBEAEC; color: var(--danger); display: block; }
+  #status-msg.info { background: var(--steel-bg); color: var(--steel); display: block; }
+
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: auto;
+    max-height: 65vh;
+    box-shadow: 0 1px 2px rgba(20,21,26,.04);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--brand);
+    color: #fff;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:hover { background: var(--gray-bg); }
+
+  .charts-heading {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 4px 0 10px;
+  }
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .chart-box {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    height: 280px;
+    box-shadow: 0 1px 2px rgba(20,21,26,.04);
+  }
+
+  #results-count {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 24px;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="eyebrow">Usadosbr · Feirão</div>
+    <h1>Feirão Setembro 2026 — Lojas com estoque desatualizado</h1>
+  </div>
+  <div id="user-box" style="display:none;">
+    <span>Logado como <b id="user-email"></b></span>
+    <button id="logout-btn">Sair</button>
+  </div>
+</header>
+
+<main>
+
+  <div id="login-screen">
+    <div class="eyebrow">Usadosbr · Feirão Setembro 2026</div>
+    <h2>Acesso restrito</h2>
+    <p>Este link é público, mas os dados só são exibidos para e-mails autorizados.<br/>
+       Digite seu e-mail para continuar.</p>
+    <input type="email" id="login-email" placeholder="seu.email@usadosbr.com" autocomplete="email" />
+    <button id="login-btn">Entrar</button>
+    <div id="login-status"></div>
+  </div>
+
+  <div id="dashboard">
+    <div id="status-msg"></div>
+
+    <div class="toolbar">
+      <div class="field" id="search-field">
+        <label>Buscar (todas as colunas)</label>
+        <input type="text" id="f-search" placeholder="Digite para buscar..." />
+      </div>
+      <div class="field">
+        <label>GP</label>
+        <select id="f-gp"><option value="">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>GN</label>
+        <select id="f-gn"><option value="">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>Faixa Estoque</label>
+        <select id="f-faixa-estoque"><option value="">Todas</option></select>
+      </div>
+      <div class="field">
+        <label>Faixa de Atualização</label>
+        <select id="f-faixa-atualizacao"><option value="">Todas</option></select>
+      </div>
+      <div class="field">
+        <label>P</label>
+        <select id="f-p"><option value="">Todos</option></select>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-gold" id="refresh-btn">↻ Atualizar</button>
+        <button class="btn btn-secondary" id="clear-filters-btn">Limpar filtros</button>
+        <button class="btn btn-green" id="download-btn">⬇ Baixar CSV</button>
+        <button class="btn btn-primary" id="email-btn">✉ Enviar para meu e-mail</button>
+      </div>
+    </div>
+
+    <div class="charts-heading">Indicadores (seguem os filtros e sua carteira)</div>
+    <div class="charts-grid">
+      <div class="chart-box"><canvas id="chart-estoque"></canvas></div>
+      <div class="chart-box"><canvas id="chart-atualizacao"></canvas></div>
+    </div>
+
+    <div id="results-count"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="table-head"></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>Usadosbr &middot; Dashboard interno &middot; acesso e ações são registrados</footer>
+
+<script>
+/* ==================== CONFIGURAÇÃO ====================
+   Preencha depois de seguir o README.md:
+   1) LOG_WEBAPP_URL: a URL do seu Web App do Apps Script (Code.gs)
+   O SHEET_ID abaixo já está preenchido com a planilha
+   "Lojas - Feirão_Set/26".
+*/
+const SHEET_ID = '1MiIT8ctq8HLP63oG34ERkyBPyhEiu-OrUCjpv7iAse0';
+const DATA_TAB = 'Base_lojas';
+const AUTH_TAB = 'Usuários_permitidos';
+const LOG_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzfCZ0o2euEGjE9PbKdHIYMAKdYYWm8IluHGYnkDrrWztMGSs8-XkhvL0_1ytoZNQJpAg/exec';
+
+// Colunas exibidas, na ordem pedida: A,B,C,D,E,G,H,J,K,L,M,N,O,P
+const EXPOSED_HEADERS = [
+  'REV_CNPJ',
+  'REV_NOME',
+  'GP_NOME',
+  'GN_NOME',
+  'Resp. Onboarding',
+  'Email Onboarding',
+  'Email GN',
+  'Estoque',
+  'Faixa Estoque',
+  'Ultima Atualização',
+  'Faixa de Atualização',
+  'Login',
+  'Senha',
+  'P'
+];
+
+const FILTER_COLUMNS = {
+  'f-gp': 'GP_NOME',
+  'f-gn': 'GN_NOME',
+  'f-faixa-estoque': 'Faixa Estoque',
+  'f-faixa-atualizacao': 'Faixa de Atualização',
+  'f-p': 'P'
+};
+
+// Colunas realmente exibidas na tabela / CSV / e-mail (subconjunto de EXPOSED_HEADERS)
+const DISPLAY_HEADERS = ['REV_CNPJ', 'REV_NOME', 'Estoque', 'Login', 'Senha'];
+const DISPLAY_INDEXES = DISPLAY_HEADERS.map(h => EXPOSED_HEADERS.indexOf(h));
+function toDisplayRow(row) {
+  return DISPLAY_INDEXES.map(idx => row[idx]);
+}
+
+// Estoque crítico: 0 a 10 veículos, ou texto "sem estoque" na própria célula
+function isEstoqueCritico(row) {
+  const estIdx = EXPOSED_HEADERS.indexOf('Estoque');
+  const raw = (row[estIdx] || '').toString().trim();
+  const lower = raw.toLowerCase();
+  if (lower.includes('sem estoque')) return true;
+  const num = parseFloat(raw.replace(',', '.'));
+  if (isNaN(num)) return null; // valor não reconhecido: não entra em nenhuma das duas contagens
+  return num >= 0 && num <= 10;
+}
+
+// Atualizado = "Até 15 dias" na coluna Faixa de Atualização; qualquer outra coisa é desatualizado
+function isEstoqueAtualizado(row) {
+  const atIdx = EXPOSED_HEADERS.indexOf('Faixa de Atualização');
+  const raw = (row[atIdx] || '').toString().trim().toLowerCase();
+  if (!raw) return null;
+  return raw === 'até 15 dias' || raw === 'ate 15 dias';
+}
+
+/* ==================== ESTADO ==================== */
+let userEmail = null;
+let userRole = 'gn'; // 'master' = vê tudo; 'gn' = só as linhas onde aparece na coluna Email GN
+let allHeaders = EXPOSED_HEADERS;
+let allRowsFull = [];  // todas as linhas (antes da restrição por carteira)
+let allRows = [];      // linhas já restritas à carteira e com login/senha preenchidos
+let charts = {};
+
+/* ==================== SESSÃO (localStorage, expira por dia) ==================== */
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem('estoque_lojas_session');
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (s.date !== todayStr()) return null;
+    return s;
+  } catch (e) { return null; }
+}
+function saveSession(s) {
+  try { localStorage.setItem('estoque_lojas_session', JSON.stringify(s)); } catch (e) {}
+}
+function clearSession() {
+  try { localStorage.removeItem('estoque_lojas_session'); } catch (e) {}
+}
+
+/* ==================== GVIZ (leitura pública da planilha) ==================== */
+function gvizUrl(tab) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+}
+
+function splitCSVLine(line) {
+  const values = []; let cur = ''; let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQuotes = false; }
+      else cur += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { values.push(cur); cur = ''; }
+      else cur += ch;
+    }
+  }
+  values.push(cur);
+  return values;
+}
+function parseCSVGeneric(csv) {
+  const lines = csv.replace(/\r\n/g, '\n').trim().split('\n');
+  return lines.map(l => splitCSVLine(l));
+}
+function parseCSVToObjects(csv) {
+  const lines = csv.replace(/\r\n/g, '\n').trim().split('\n');
+  if (lines.length === 0) return [];
+  const headers = splitCSVLine(lines[0]).map(h => h.trim());
+  const out = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const obj = {}; const values = splitCSVLine(lines[i]);
+    headers.forEach((h, idx) => { obj[h] = values[idx] !== undefined ? values[idx].trim() : ''; });
+    out.push(obj);
+  }
+  return out;
+}
+
+/* ==================== LOGIN ==================== */
+window.addEventListener('DOMContentLoaded', () => {
+  const existing = loadSession();
+  if (existing) {
+    userEmail = existing.email;
+    userRole = existing.role || 'gn';
+    enterDashboard();
+  }
+  document.getElementById('login-btn').addEventListener('click', handleLogin);
+  document.getElementById('login-email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+});
+
+async function handleLogin() {
+  const input = document.getElementById('login-email');
+  const statusEl = document.getElementById('login-status');
+  const btn = document.getElementById('login-btn');
+  const email = (input.value || '').trim().toLowerCase();
+
+  statusEl.className = '';
+  statusEl.textContent = '';
+
+  if (!email || email.indexOf('@') === -1) {
+    statusEl.className = 'error';
+    statusEl.textContent = 'Digite um e-mail válido.';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.className = 'info';
+  statusEl.textContent = 'Verificando...';
+
+  try {
+    const res = await fetch(gvizUrl(AUTH_TAB), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const csvText = await res.text();
+    const rows = parseCSVGeneric(csvText);
+    const headers = (rows[0] || []).map(h => (h || '').trim().toLowerCase());
+    const perfilIdx = headers.findIndex(h => h.includes('perfil'));
+
+    let allowed = false;
+    let role = 'gn';
+    for (let i = 1; i < rows.length; i++) {
+      const candidate = (rows[i][0] || '').trim().toLowerCase();
+      if (candidate && candidate === email) {
+        allowed = true;
+        const perfilVal = perfilIdx !== -1 ? (rows[i][perfilIdx] || '').trim().toLowerCase() : '';
+        role = perfilVal === 'master' ? 'master' : 'gn';
+        break;
+      }
+    }
+
+    if (!allowed) {
+      statusEl.className = 'error';
+      statusEl.textContent = 'Este e-mail não tem permissão para acessar o dashboard.';
+      btn.disabled = false;
+      return;
+    }
+
+    userEmail = email;
+    userRole = role;
+    saveSession({ email: email, role: role, date: todayStr() });
+    logToBackend('login');
+    enterDashboard();
+  } catch (err) {
+    statusEl.className = 'error';
+    statusEl.textContent = 'Erro ao verificar acesso. Tente novamente.';
+    btn.disabled = false;
+  }
+}
+
+function enterDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('user-box').style.display = 'flex';
+  document.getElementById('user-email').textContent = userEmail + (userRole === 'master' ? ' (master)' : '');
+  loadData();
+}
+
+document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', function () {
+  clearSession();
+  location.reload();
+});
+
+/* ==================== BACKEND (log + e-mail) ==================== */
+function callBackend(action, extra) {
+  const payload = Object.assign({ action: action, email: userEmail }, extra || {});
+  return fetch(LOG_WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).then(r => r.json());
+}
+function logToBackend(action) {
+  if (!LOG_WEBAPP_URL || LOG_WEBAPP_URL.indexOf('COLOQUE_AQUI') === 0) return;
+  callBackend(action).catch(() => {});
+}
+
+/* ==================== DADOS ==================== */
+async function loadData() {
+  showStatus('Carregando dados...', 'info');
+  try {
+    const res = await fetch(gvizUrl(DATA_TAB), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const csvText = await res.text();
+    const objects = parseCSVToObjects(csvText);
+
+    allRowsFull = objects.map(obj => EXPOSED_HEADERS.map(h => (obj[h] !== undefined ? obj[h] : '')));
+
+    if (userRole === 'master') {
+      allRows = allRowsFull;
+    } else {
+      const gnIdx = EXPOSED_HEADERS.indexOf('Email GN');
+      allRows = allRowsFull.filter(row => (row[gnIdx] || '').toLowerCase().trim() === userEmail);
+    }
+
+    // Oculta lojas sem Login ou sem Senha preenchidos (coluna N e O)
+    const loginIdx = EXPOSED_HEADERS.indexOf('Login');
+    const senhaIdx = EXPOSED_HEADERS.indexOf('Senha');
+    const hasValue = v => {
+      const s = (v || '').toString().trim();
+      return s !== '' && s !== '-' && s !== '--';
+    };
+    allRows = allRows.filter(row => hasValue(row[loginIdx]) && hasValue(row[senhaIdx]));
+
+    buildTableHead();
+    populateFilterOptions();
+    renderTable();
+    document.getElementById('status-msg').style.display = 'none';
+  } catch (err) {
+    showStatus('Não foi possível carregar os dados. Tente atualizar novamente.', 'error');
+  }
+}
+
+document.getElementById('refresh-btn').addEventListener('click', loadData);
+
+/* ==================== TABELA ==================== */
+function buildTableHead() {
+  const tr = document.getElementById('table-head');
+  tr.innerHTML = '';
+  DISPLAY_HEADERS.forEach(function (h) {
+    const th = document.createElement('th');
+    th.textContent = h;
+    tr.appendChild(th);
+  });
+}
+
+function populateFilterOptions() {
+  Object.keys(FILTER_COLUMNS).forEach(function (selectId) {
+    const colName = FILTER_COLUMNS[selectId];
+    const colIndex = allHeaders.indexOf(colName);
+    const select = document.getElementById(selectId);
+    if (colIndex === -1) return;
+
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">Todos</option>';
+
+    const values = new Set();
+    allRows.forEach(function (row) {
+      const v = row[colIndex];
+      if (v !== '' && v !== null && v !== undefined) values.add(String(v));
+    });
+
+    Array.from(values).sort().forEach(function (v) {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    });
+    select.value = currentValue;
+  });
+}
+
+function getFilteredRows() {
+  const search = document.getElementById('f-search').value.trim().toLowerCase();
+  const activeFilters = {};
+  Object.keys(FILTER_COLUMNS).forEach(function (selectId) {
+    const val = document.getElementById(selectId).value;
+    if (val) activeFilters[FILTER_COLUMNS[selectId]] = val;
+  });
+
+  return allRows.filter(function (row) {
+    for (const colName in activeFilters) {
+      const idx = allHeaders.indexOf(colName);
+      if (idx !== -1 && String(row[idx]) !== activeFilters[colName]) return false;
+    }
+    if (search) {
+      const hay = row.join(' ').toLowerCase();
+      if (hay.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+}
+
+function renderTable() {
+  const rows = getFilteredRows();
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+
+  rows.forEach(function (row) {
+    const displayRow = toDisplayRow(row);
+    const tr = document.createElement('tr');
+    displayRow.forEach(function (cell) {
+      const td = document.createElement('td');
+      td.textContent = cell === null || cell === undefined ? '' : cell;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  const scopeNote = userRole === 'master' ? '' : ' (sua carteira)';
+  document.getElementById('results-count').textContent =
+    rows.length + ' de ' + allRows.length + ' lojas exibidas' + scopeNote;
+
+  updateCharts(rows);
+}
+
+/* ==================== GRÁFICOS ==================== */
+function updateCharts(rows) {
+  let ok = 0, critico = 0, atualizado = 0, desatualizado = 0;
+
+  rows.forEach(function (row) {
+    const critStatus = isEstoqueCritico(row);
+    if (critStatus === true) critico++;
+    else if (critStatus === false) ok++;
+
+    const atStatus = isEstoqueAtualizado(row);
+    if (atStatus === true) atualizado++;
+    else if (atStatus === false) desatualizado++;
+  });
+
+  renderDoughnut('chart-estoque', 'Estoque OK x Crítico (0-10 ou "sem estoque")',
+    ['Estoque OK', 'Estoque Crítico'], [ok, critico], ['#2E8B57', '#B23A48']);
+
+  renderDoughnut('chart-atualizacao', 'Estoque Atualizado x Desatualizado (> 15 dias)',
+    ['Atualizado (até 15 dias)', 'Desatualizado'], [atualizado, desatualizado], ['#33517A', '#A9822C']);
+}
+
+function renderDoughnut(canvasId, title, labels, data, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || typeof Chart === 'undefined') return;
+  const total = data.reduce((a, b) => a + b, 0);
+
+  if (charts[canvasId]) charts[canvasId].destroy();
+  charts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{ data: data, backgroundColor: colors, borderColor: '#fff', borderWidth: 2 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Inter' } } },
+        title: { display: true, text: title, font: { family: 'Space Grotesk', size: 13 } },
+        datalabels: {
+          color: '#fff',
+          font: { weight: '700', size: 13 },
+          formatter: function (value) { return total > 0 ? Math.round(value / total * 100) + '%' : '0%'; }
+        }
+      }
+    },
+    plugins: typeof ChartDataLabels !== 'undefined' ? [ChartDataLabels] : []
+  });
+}
+
+['f-search'].forEach(function (id) {
+  document.getElementById(id).addEventListener('input', renderTable);
+});
+Object.keys(FILTER_COLUMNS).forEach(function (id) {
+  document.getElementById(id).addEventListener('change', renderTable);
+});
+
+document.getElementById('clear-filters-btn').addEventListener('click', function () {
+  document.getElementById('f-search').value = '';
+  Object.keys(FILTER_COLUMNS).forEach(function (id) {
+    document.getElementById(id).value = '';
+  });
+  renderTable();
+});
+
+/* ==================== STATUS ==================== */
+let statusTimer = null;
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = type;
+  el.style.display = 'block';
+  clearTimeout(statusTimer);
+  if (type !== 'info') {
+    statusTimer = setTimeout(function () { el.style.display = 'none'; }, 5000);
+  }
+}
+
+/* ==================== BAIXAR CSV ==================== */
+document.getElementById('download-btn').addEventListener('click', function () {
+  const rows = getFilteredRows().map(toDisplayRow);
+  const csv = toCsv(DISPLAY_HEADERS, rows);
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'relatorio_lojas.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showStatus('CSV baixado com ' + rows.length + ' linha(s).', 'success');
+  logToBackend('download');
+});
+
+function toCsv(headers, rows) {
+  const escape = function (val) {
+    let s = val === null || val === undefined ? '' : String(val);
+    if (/[",\r\n;]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  };
+  const lines = [headers.map(escape).join(',')];
+  rows.forEach(function (r) { lines.push(r.map(escape).join(',')); });
+  return lines.join('\r\n');
+}
+
+/* ==================== ENVIAR POR E-MAIL ==================== */
+document.getElementById('email-btn').addEventListener('click', function () {
+  const btn = this;
+  const rows = getFilteredRows().map(toDisplayRow);
+
+  if (!LOG_WEBAPP_URL || LOG_WEBAPP_URL.indexOf('COLOQUE_AQUI') === 0) {
+    showStatus('Configuração pendente: defina LOG_WEBAPP_URL no topo do index.html.', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+  callBackend('send_email', { headers: DISPLAY_HEADERS, rows: rows })
+    .then(function (res) {
+      if (res.ok) {
+        showStatus('Relatório enviado para ' + userEmail + '.', 'success');
+      } else {
+        showStatus('Não foi possível enviar o e-mail (' + res.error + ').', 'error');
+      }
+    })
+    .catch(function () {
+      showStatus('Falha de conexão ao enviar o e-mail.', 'error');
+    })
+    .finally(function () {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    });
+});
+</script>
+
+</body>
+</html>
