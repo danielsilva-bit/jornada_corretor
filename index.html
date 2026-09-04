@@ -34,6 +34,10 @@
     --owner-corretora:#4a4a4a;
     --owner-corretora-soft:#e4e4e4;
 
+    --group-kickoff-bg:#e7e7e5;
+    --group-ativacao-bg:#fdf1cf;
+    --group-capacitacao-bg:#e0f3e2;
+
     --shadow: 0 1px 2px rgba(20,20,20,.06), 0 6px 16px rgba(20,20,20,.06);
     --radius: 10px;
   }
@@ -70,6 +74,10 @@
       --owner-corretora:#d4d4d4;
       --owner-corretora-soft:#333333;
 
+      --group-kickoff-bg:#2a2a2a;
+      --group-ativacao-bg:#3a2f10;
+      --group-capacitacao-bg:#123a1c;
+
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.4);
     }
   }
@@ -104,6 +112,10 @@
     --owner-c6-soft:#1c1c1c;
     --owner-corretora:#d4d4d4;
     --owner-corretora-soft:#333333;
+
+    --group-kickoff-bg:#2a2a2a;
+    --group-ativacao-bg:#3a2f10;
+    --group-capacitacao-bg:#123a1c;
 
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.4);
   }
@@ -217,29 +229,8 @@
 
   main.board-wrap{padding:20px 28px 40px; overflow-x:auto;}
   .board{display:flex; gap:14px; min-width:max-content;}
+  .board.grouped{min-width:0; width:100%;}
 
-  .group-bar{display:flex; gap:14px; min-width:max-content; margin-bottom:10px;}
-  .group-bar[hidden]{display:none;}
-  .group-cell{
-    flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:8px;
-    background:var(--surface-3); border:1px solid var(--border); border-bottom:3px solid var(--accent-solid);
-    border-radius:8px; padding:7px 12px; font-size:12.5px; font-weight:700;
-  }
-  .group-cell .group-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .group-cell .group-count{
-    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11.5px; color:var(--text-muted);
-    white-space:nowrap;
-  }
-  .group-cell .group-toggle{
-    flex-shrink:0; width:20px; height:20px; padding:0; border-radius:5px; font-size:13px;
-    line-height:1; display:flex; align-items:center; justify-content:center;
-  }
-  .group-cell.is-collapsed{
-    flex-direction:column; justify-content:center; align-items:center; width:60px; padding:8px 4px; gap:6px;
-  }
-  .group-cell.is-collapsed .group-name{
-    writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; max-height:110px;
-  }
   .column{
     width:264px; flex-shrink:0; display:flex; flex-direction:column;
     background:var(--surface-2); border:1px solid var(--border); border-radius:12px;
@@ -247,14 +238,12 @@
   }
   .column.col-dim{opacity:.35;}
   .column.drag-over{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft);}
-  .column.collapsed{
-    width:60px; align-items:center; justify-content:flex-start; gap:8px; padding:10px 4px; cursor:pointer;
+  .column.group-column{
+    width:auto; flex:1 1 0; min-width:220px; border-bottom:3px solid var(--accent-solid);
   }
-  .column.collapsed .group-name{
-    writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; font-size:12px; font-weight:700; max-height:150px;
-  }
-  .column.collapsed .group-count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted);}
-  .column.collapsed .group-toggle{width:20px; height:20px; padding:0; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center;}
+  .column.group-column.group-kickoff{background:var(--group-kickoff-bg);}
+  .column.group-column.group-ativacao{background:var(--group-ativacao-bg);}
+  .column.group-column.group-capacitacao{background:var(--group-capacitacao-bg);}
   .col-head{padding:12px 12px 10px; border-bottom:1px solid var(--border);}
   .col-head .owner-tag{margin-bottom:6px;}
   .col-head h3{font-size:13px; font-weight:700; line-height:1.3;}
@@ -262,6 +251,19 @@
   .col-meta .count{font-family:'IBM Plex Mono',monospace;}
   .col-body{padding:10px; display:flex; flex-direction:column; gap:9px; overflow-y:auto;}
   .col-empty{font-size:12px; color:var(--text-muted); text-align:center; padding:14px 4px; border:1px dashed var(--border); border-radius:8px;}
+
+  .group-col-head{padding:12px 12px 8px; border-bottom:1px solid rgba(0,0,0,.08);}
+  .group-col-head h3{font-size:14px; font-weight:800; line-height:1.3;}
+  .group-col-head .col-meta{margin-top:4px;}
+  .stage-section{border-bottom:1px dashed var(--border); padding:9px 10px 10px;}
+  .stage-section:last-child{border-bottom:none;}
+  .stage-section.drag-over{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft);}
+  .stage-sub-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+    font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:7px;
+  }
+  .stage-sub-head .stage-sub-count{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .stage-sub-body{display:flex; flex-direction:column; gap:9px;}
 
   .owner-tag{
     display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600;
@@ -393,7 +395,6 @@
 </div>
 
 <main class="board-wrap" id="board-wrap">
-  <div class="group-bar" id="group-bar" hidden></div>
   <div class="board" id="board"></div>
 </main>
 
@@ -500,16 +501,12 @@
     {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0}
   ];
 
-  // Fases do funil, para o botão "Agrupar" (colunas mescladas ao estilo Excel)
+  // Fases do funil, para o botão "Agrupar" (colunas mescladas por fase)
   var STAGE_GROUPS = [
-    {id:"kickoff",      name:"Kickoff",              stageIds:["reuniao","formalizacao","pagamento"]},
-    {id:"ativacao",     name:"Ativação",             stageIds:["numero","config-meta","ativacao-meta","perfil-crm","template"]},
-    {id:"capacitacao",  name:"Capacitação e Start",  stageIds:["envio-base","disparo-base","treinamento","producao"]}
+    {id:"kickoff",      name:"Kickoff",              colorClass:"group-kickoff",     stageIds:["reuniao","formalizacao","pagamento"]},
+    {id:"ativacao",     name:"Ativação",             colorClass:"group-ativacao",    stageIds:["numero","config-meta","ativacao-meta","perfil-crm","template"]},
+    {id:"capacitacao",  name:"Capacitação e Start",  colorClass:"group-capacitacao", stageIds:["envio-base","disparo-base","treinamento","producao"]}
   ];
-  var COL_W = 264, COL_GAP = 14, COLLAPSED_W = 60;
-  function groupForStage(stageId){
-    return STAGE_GROUPS.find(function(g){ return g.stageIds.indexOf(stageId) !== -1; }) || null;
-  }
 
   // Seed cards derived from the Usadosbr x C6 tracking sheet (broker onboarding funnel).
   var DEFAULT_CARDS = [
@@ -573,7 +570,7 @@
   }
 
   var state = loadState();
-  if(!state.grouping) state.grouping = {enabled:false, collapsed:{}};
+  if(!state.grouping) state.grouping = {enabled:false};
   saveState();
 
   var board = document.getElementById("board");
@@ -717,182 +714,185 @@
     return state.cards.filter(function(c){ return group.stageIds.indexOf(c.stageId) !== -1; }).length;
   }
 
-  function renderGroupBar(){
-    var bar = document.getElementById("group-bar");
-    if(!state.grouping.enabled){ bar.hidden = true; bar.innerHTML = ""; return; }
-    bar.hidden = false;
-    bar.innerHTML = "";
-    STAGE_GROUPS.forEach(function(group){
-      var collapsed = !!state.grouping.collapsed[group.id];
-      var n = group.stageIds.length;
-      var cell = document.createElement("div");
-      cell.className = "group-cell" + (collapsed ? " is-collapsed" : "");
-      var count = groupCount(group);
-      if(collapsed){
-        cell.style.width = COLLAPSED_W + "px";
-        cell.innerHTML =
-          '<button class="ghost group-toggle" title="Expandir fase" data-toggle-group="'+group.id+'">+</button>' +
-          '<span class="group-name">' + escapeHtml(group.name) + '</span>' +
-          '<span class="group-count">' + count + '</span>';
-      } else {
-        cell.style.width = (n*COL_W + (n-1)*COL_GAP) + "px";
-        cell.innerHTML =
-          '<span class="group-name">' + escapeHtml(group.name) + '</span>' +
-          '<span class="group-count">' + count + ' corretora' + (count===1?'':'s') + '</span>' +
-          '<button class="ghost group-toggle" title="Recolher fase" data-toggle-group="'+group.id+'">−</button>';
-      }
-      cell.querySelector("[data-toggle-group]").addEventListener("click", function(e){
-        e.stopPropagation();
-        state.grouping.collapsed[group.id] = !collapsed;
-        saveState();
-        render();
-      });
-      bar.appendChild(cell);
+  function attachDropZone(el, stageId){
+    el.addEventListener("dragover", function(e){ e.preventDefault(); el.classList.add("drag-over"); });
+    el.addEventListener("dragleave", function(){ el.classList.remove("drag-over"); });
+    el.addEventListener("drop", function(e){
+      e.preventDefault();
+      el.classList.remove("drag-over");
+      var id = dragCardId || e.dataTransfer.getData("text/plain");
+      if(id) moveCard(id, stageId);
     });
+  }
+
+  function buildCardEl(card, stage, today){
+    var days = cardRealDays(card, today);
+    var sla = stage.sla;
+    var chipClass, chipText;
+    var overdue = false;
+    if(sla <= 0){
+      chipClass = "sla-neutral"; chipText = days + "d em produção";
+    } else {
+      chipClass = "sla-ok"; chipText = days + "d real · SLA " + sla + "d";
+      if(days > sla){ chipClass = "sla-danger"; chipText = days + "d real · " + (days - sla) + "d atrasado"; overdue = true; }
+      else if(days === sla){ chipClass = "sla-warn"; chipText = days + "d real · vence hoje"; }
+    }
+
+    var el = document.createElement("div");
+    el.className = "card" + (overdue ? " overdue" : "") + (cardMatchesFilters(card) ? "" : " hidden-by-filter");
+    el.draggable = true;
+    el.dataset.cardId = card.id;
+    el.dataset.owner = stage.owner;
+    var obsPreview = card.obs ? (card.obs.length > 90 ? card.obs.slice(0,90) + "…" : card.obs) : "";
+    el.innerHTML =
+      '<div class="name">' + escapeHtml(card.corretora) + '</div>' +
+      '<div class="resp">' + escapeHtml(card.resp || "—") + (card.gp ? ' · GP ' + escapeHtml(card.gp) : '') + '</div>' +
+      (obsPreview ? '<div class="obs" title="' + escapeHtml(card.obs) + '">' + escapeHtml(obsPreview) + '</div>' : '') +
+      '<div class="row2"><span class="date mono">contrato ' + fmtDate(card.dataContratacao) + '</span><span class="sla-chip ' + chipClass + '">' + chipText + '</span></div>' +
+      '<div class="card-actions">' +
+        '<div class="step-btns"></div>' +
+        '<div class="actions-right">' +
+          '<button class="icon-btn ghost" data-history="' + card.id + '" title="Ver histórico">🕒</button>' +
+          '<button class="icon-btn ghost" data-edit="' + card.id + '" title="Editar">✎</button>' +
+        '</div>' +
+      '</div>';
+
+    var stepBtns = el.querySelector(".step-btns");
+    var idx = state.stages.findIndex(function(s){return s.id===stage.id;});
+    var prevBtn = document.createElement("button");
+    prevBtn.className = "ghost icon-btn"; prevBtn.textContent = "◂";
+    prevBtn.title = "Etapa anterior";
+    prevBtn.disabled = idx === 0;
+    prevBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx-1].id); });
+    var nextBtn = document.createElement("button");
+    nextBtn.className = "ghost icon-btn"; nextBtn.textContent = "▸";
+    nextBtn.title = "Próxima etapa";
+    nextBtn.disabled = idx === state.stages.length-1;
+    nextBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx+1].id); });
+    stepBtns.appendChild(prevBtn);
+    stepBtns.appendChild(nextBtn);
+
+    el.querySelector("[data-edit]").addEventListener("click", function(e){
+      e.stopPropagation();
+      openCardModal(card.id);
+    });
+    el.querySelector("[data-history]").addEventListener("click", function(e){
+      e.stopPropagation();
+      openHistoryModal(card.id);
+    });
+
+    el.addEventListener("dragstart", function(e){
+      dragCardId = card.id;
+      el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", card.id);
+    });
+    el.addEventListener("dragend", function(){ el.classList.remove("dragging"); dragCardId = null; });
+
+    return el;
+  }
+
+  function renderStageColumn(stage, today, anyFilterActive){
+    var col = document.createElement("div");
+    col.className = "column";
+    col.dataset.stageId = stage.id;
+
+    var allInStage = state.cards.filter(function(c){return c.stageId===stage.id;});
+    var visibleInStage = allInStage.filter(cardMatchesFilters);
+    if(anyFilterActive && visibleInStage.length===0) col.classList.add("col-dim");
+
+    var head = document.createElement("div");
+    head.className = "col-head";
+    var countLabel = anyFilterActive ? (visibleInStage.length + " de " + allInStage.length) : String(allInStage.length);
+    head.innerHTML =
+      '<span class="owner-tag ' + ownerClass(stage.owner) + '">' + stage.owner + '</span>' +
+      '<h3>' + stage.name + '</h3>' +
+      '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
+    col.appendChild(head);
+
+    var body = document.createElement("div");
+    body.className = "col-body";
+
+    if(allInStage.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "col-empty";
+      empty.textContent = "Nenhum card aqui";
+      body.appendChild(empty);
+    }
+
+    allInStage.forEach(function(card){ body.appendChild(buildCardEl(card, stage, today)); });
+
+    col.appendChild(body);
+    attachDropZone(col, stage.id);
+    board.appendChild(col);
+  }
+
+  function renderGroupColumn(group, today, anyFilterActive){
+    var col = document.createElement("div");
+    col.className = "column group-column " + group.colorClass;
+    col.dataset.groupId = group.id;
+
+    var allInGroup = state.cards.filter(function(c){ return group.stageIds.indexOf(c.stageId) !== -1; });
+    var visibleInGroup = allInGroup.filter(cardMatchesFilters);
+    if(anyFilterActive && visibleInGroup.length===0) col.classList.add("col-dim");
+
+    var head = document.createElement("div");
+    head.className = "col-head group-col-head";
+    var countLabel = anyFilterActive ? (visibleInGroup.length + " de " + allInGroup.length) : String(allInGroup.length);
+    head.innerHTML =
+      '<h3>' + escapeHtml(group.name) + '</h3>' +
+      '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInGroup.length===1?'':'s') + '</span></div>';
+    col.appendChild(head);
+
+    var body = document.createElement("div");
+    body.className = "col-body";
+
+    group.stageIds.forEach(function(stageId){
+      var stage = stageById(stageId);
+      if(!stage) return;
+      var allInStage = state.cards.filter(function(c){return c.stageId===stage.id;});
+
+      var section = document.createElement("div");
+      section.className = "stage-section";
+
+      var subHead = document.createElement("div");
+      subHead.className = "stage-sub-head";
+      subHead.innerHTML = '<span>' + escapeHtml(stage.name) + '</span><span class="stage-sub-count">' + allInStage.length + '</span>';
+      section.appendChild(subHead);
+
+      var subBody = document.createElement("div");
+      subBody.className = "stage-sub-body";
+      if(allInStage.length === 0){
+        var empty = document.createElement("div");
+        empty.className = "col-empty";
+        empty.textContent = "Nenhum card aqui";
+        subBody.appendChild(empty);
+      }
+      allInStage.forEach(function(card){ subBody.appendChild(buildCardEl(card, stage, today)); });
+      section.appendChild(subBody);
+
+      attachDropZone(section, stage.id);
+      body.appendChild(section);
+    });
+
+    col.appendChild(body);
+    board.appendChild(col);
   }
 
   function render(){
     var today = new Date(); today.setHours(0,0,0,0);
     renderStats(today);
     renderDashboard();
-    renderGroupBar();
     board.innerHTML = "";
+    board.classList.toggle("grouped", state.grouping.enabled);
 
     var anyFilterActive = !!filters.search || filters.owner!=="all" || filters.overdueOnly;
-    var collapsedGroupsShown = {};
 
-    state.stages.forEach(function(stage){
-      if(state.grouping.enabled){
-        var grp = groupForStage(stage.id);
-        if(grp && state.grouping.collapsed[grp.id]){
-          if(collapsedGroupsShown[grp.id]) return; // already rendered a placeholder for this group
-          collapsedGroupsShown[grp.id] = true;
-          var placeholder = document.createElement("div");
-          placeholder.className = "column collapsed";
-          placeholder.title = "Expandir " + grp.name;
-          var n = groupCount(grp);
-          placeholder.innerHTML =
-            '<button class="ghost group-toggle" title="Expandir fase" data-toggle-group="'+grp.id+'">+</button>' +
-            '<span class="group-name">' + escapeHtml(grp.name) + '</span>' +
-            '<span class="group-count">' + n + '</span>';
-          placeholder.querySelector("[data-toggle-group]").addEventListener("click", function(e){
-            e.stopPropagation();
-            state.grouping.collapsed[grp.id] = false;
-            saveState();
-            render();
-          });
-          board.appendChild(placeholder);
-          return;
-        }
-      }
-
-      var col = document.createElement("div");
-      col.className = "column";
-      col.dataset.stageId = stage.id;
-
-      var allInStage = state.cards.filter(function(c){return c.stageId===stage.id;});
-      var visibleInStage = allInStage.filter(cardMatchesFilters);
-      if(anyFilterActive && visibleInStage.length===0) col.classList.add("col-dim");
-
-      var head = document.createElement("div");
-      head.className = "col-head";
-      var countLabel = anyFilterActive ? (visibleInStage.length + " de " + allInStage.length) : String(allInStage.length);
-      head.innerHTML =
-        '<span class="owner-tag ' + ownerClass(stage.owner) + '">' + stage.owner + '</span>' +
-        '<h3>' + stage.name + '</h3>' +
-        '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
-      col.appendChild(head);
-
-      var body = document.createElement("div");
-      body.className = "col-body";
-
-      if(allInStage.length === 0){
-        var empty = document.createElement("div");
-        empty.className = "col-empty";
-        empty.textContent = "Nenhum card aqui";
-        body.appendChild(empty);
-      }
-
-      allInStage.forEach(function(card){
-        var days = cardRealDays(card, today);
-        var sla = stage.sla;
-        var chipClass, chipText;
-        var overdue = false;
-        if(sla <= 0){
-          chipClass = "sla-neutral"; chipText = days + "d em produção";
-        } else {
-          chipClass = "sla-ok"; chipText = days + "d real · SLA " + sla + "d";
-          if(days > sla){ chipClass = "sla-danger"; chipText = days + "d real · " + (days - sla) + "d atrasado"; overdue = true; }
-          else if(days === sla){ chipClass = "sla-warn"; chipText = days + "d real · vence hoje"; }
-        }
-
-        var el = document.createElement("div");
-        el.className = "card" + (overdue ? " overdue" : "") + (cardMatchesFilters(card) ? "" : " hidden-by-filter");
-        el.draggable = true;
-        el.dataset.cardId = card.id;
-        el.dataset.owner = stage.owner;
-        var obsPreview = card.obs ? (card.obs.length > 90 ? card.obs.slice(0,90) + "…" : card.obs) : "";
-        el.innerHTML =
-          '<div class="name">' + escapeHtml(card.corretora) + '</div>' +
-          '<div class="resp">' + escapeHtml(card.resp || "—") + (card.gp ? ' · GP ' + escapeHtml(card.gp) : '') + '</div>' +
-          (obsPreview ? '<div class="obs" title="' + escapeHtml(card.obs) + '">' + escapeHtml(obsPreview) + '</div>' : '') +
-          '<div class="row2"><span class="date mono">contrato ' + fmtDate(card.dataContratacao) + '</span><span class="sla-chip ' + chipClass + '">' + chipText + '</span></div>' +
-          '<div class="card-actions">' +
-            '<div class="step-btns"></div>' +
-            '<div class="actions-right">' +
-              '<button class="icon-btn ghost" data-history="' + card.id + '" title="Ver histórico">🕒</button>' +
-              '<button class="icon-btn ghost" data-edit="' + card.id + '" title="Editar">✎</button>' +
-            '</div>' +
-          '</div>';
-
-        var stepBtns = el.querySelector(".step-btns");
-        var idx = state.stages.findIndex(function(s){return s.id===stage.id;});
-        var prevBtn = document.createElement("button");
-        prevBtn.className = "ghost icon-btn"; prevBtn.textContent = "◂";
-        prevBtn.title = "Etapa anterior";
-        prevBtn.disabled = idx === 0;
-        prevBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx-1].id); });
-        var nextBtn = document.createElement("button");
-        nextBtn.className = "ghost icon-btn"; nextBtn.textContent = "▸";
-        nextBtn.title = "Próxima etapa";
-        nextBtn.disabled = idx === state.stages.length-1;
-        nextBtn.addEventListener("click", function(e){ e.stopPropagation(); moveCard(card.id, state.stages[idx+1].id); });
-        stepBtns.appendChild(prevBtn);
-        stepBtns.appendChild(nextBtn);
-
-        el.querySelector("[data-edit]").addEventListener("click", function(e){
-          e.stopPropagation();
-          openCardModal(card.id);
-        });
-        el.querySelector("[data-history]").addEventListener("click", function(e){
-          e.stopPropagation();
-          openHistoryModal(card.id);
-        });
-
-        el.addEventListener("dragstart", function(e){
-          dragCardId = card.id;
-          el.classList.add("dragging");
-          e.dataTransfer.effectAllowed = "move";
-          e.dataTransfer.setData("text/plain", card.id);
-        });
-        el.addEventListener("dragend", function(){ el.classList.remove("dragging"); dragCardId = null; });
-
-        body.appendChild(el);
-      });
-
-      col.appendChild(body);
-
-      col.addEventListener("dragover", function(e){ e.preventDefault(); col.classList.add("drag-over"); });
-      col.addEventListener("dragleave", function(){ col.classList.remove("drag-over"); });
-      col.addEventListener("drop", function(e){
-        e.preventDefault();
-        col.classList.remove("drag-over");
-        var id = dragCardId || e.dataTransfer.getData("text/plain");
-        if(id) moveCard(id, stage.id);
-      });
-
-      board.appendChild(col);
-    });
+    if(state.grouping.enabled){
+      STAGE_GROUPS.forEach(function(group){ renderGroupColumn(group, today, anyFilterActive); });
+    } else {
+      state.stages.forEach(function(stage){ renderStageColumn(stage, today, anyFilterActive); });
+    }
   }
 
   function moveCard(cardId, newStageId){
