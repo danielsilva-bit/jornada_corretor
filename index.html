@@ -310,7 +310,7 @@
     <div class="brand-mark">C6</div>
     <div>
       <h1>EGV Usadosbr — Jornada da Corretora</h1>
-      <p>Funil de onboarding Usadosbr × C6 — da reunião comercial ao treinamento e produção. Arraste os cards entre etapas, acompanhe SLA ideal x real e exporte o relatório. <em>Versão de demonstração com dados fictícios — os cards abaixo são exemplos, não corretoras reais.</em></p>
+      <p>Funil de onboarding Usadosbr × C6 — da reunião comercial ao treinamento e produção. Arraste os cards entre etapas, acompanhe SLA ideal x real e exporte o relatório.</p>
     </div>
   </div>
   <div class="top-actions">
@@ -456,15 +456,15 @@
     {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0}
   ];
 
-  // Dados de EXEMPLO (fictícios) para demonstração pública do funil — não representam corretoras reais.
+  // Seed cards derived from the Usadosbr x C6 tracking sheet (broker onboarding funnel).
   var DEFAULT_CARDS = [
-    {id:"c1", corretora:"Corretora Horizonte (exemplo)", resp:"Ana Souza", gp:"Gerente de Parceria A", dataContratacao:"2026-08-10", stageId:"reuniao"},
-    {id:"c2", corretora:"Corretora Vitória Imóveis (exemplo)", resp:"Carlos Lima", gp:"Gerente de Parceria B", dataContratacao:"2026-08-05", stageId:"formalizacao"},
-    {id:"c3", corretora:"Corretora Alfa (exemplo)", resp:"Beatriz Alves", gp:"Gerente de Parceria A", dataContratacao:"2026-07-28", stageId:"pagamento"},
-    {id:"c4", corretora:"Corretora Sul Realty (exemplo)", resp:"Diego Martins", gp:"Gerente de Parceria B", dataContratacao:"2026-07-20", stageId:"config-meta"},
-    {id:"c5", corretora:"Corretora Nova Aliança (exemplo)", resp:"Fernanda Ribeiro", gp:"Gerente de Parceria A", dataContratacao:"2026-07-15", stageId:"perfil-crm"},
-    {id:"c6", corretora:"Corretora Prime (exemplo)", resp:"Gustavo Rocha", gp:"Gerente de Parceria B", dataContratacao:"2026-07-05", stageId:"treinamento"},
-    {id:"c7", corretora:"Corretora Bela Vista (exemplo)", resp:"Helena Costa", gp:"Gerente de Parceria A", dataContratacao:"2026-06-20", stageId:"producao"}
+    {id:"c1", corretora:"DNA", resp:"Danillo Nunes Andrade", gp:"Kelly Krepke", dataContratacao:"2026-07-11", stageId:"config-meta"},
+    {id:"c2", corretora:"JM3D Corretora", resp:"Dirceia", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c3", corretora:"FMP", resp:"Fabiano", gp:"Luciana Fonseca", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c4", corretora:"JE Corretora", resp:"Renato", gp:"Kelly Krepke", dataContratacao:"2026-07-17", stageId:"reuniao"},
+    {id:"c5", corretora:"Distrital", resp:"—", gp:"Michelle", dataContratacao:"2026-07-17", stageId:"pagamento"},
+    {id:"c6", corretora:"Proven", resp:"Graziane", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"},
+    {id:"c7", corretora:"BCM", resp:"Daniellem", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"}
   ].map(function(c){
     c.history = [{stageId:c.stageId, enteredAt:c.dataContratacao, exitedAt:null}];
     return c;
