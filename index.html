@@ -587,7 +587,12 @@
     {id:"c4", corretora:"JE Corretora", resp:"Renato", gp:"Kelly Krepke", dataContratacao:"2026-07-17", stageId:"reuniao"},
     {id:"c5", corretora:"Distrital", resp:"—", gp:"Michelle", dataContratacao:"2026-07-17", stageId:"pagamento"},
     {id:"c6", corretora:"Proven", resp:"Graziane", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"},
-    {id:"c7", corretora:"BCM", resp:"Daniellem", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"}
+    {id:"c7", corretora:"BCM", resp:"Daniellem", gp:"Luciana Fonseca", dataContratacao:"2026-07-18", stageId:"pagamento"},
+    {id:"c8", corretora:"Jardini Corretora de Seguros", resp:"Alexandre", gp:"Edilson", dataContratacao:"2026-09-09", stageId:"pagamento"},
+    {id:"c9", corretora:"VDC Acessoria Financeira", resp:"Patricio", gp:"Anna", dataContratacao:"2026-09-08", stageId:"pagamento"},
+    {id:"c10", corretora:"Fernanda Corretora", resp:"Fernanda", gp:"Anna", dataContratacao:"2026-08-26", stageId:"reuniao"},
+    {id:"c11", corretora:"FGUERRA", resp:"Fábio", gp:"Anna", dataContratacao:"2026-08-24", stageId:"reuniao"},
+    {id:"c12", corretora:"ROMAP", resp:"Moisés", gp:"Anna", dataContratacao:"2026-08-24", stageId:"reuniao"}
   ].map(function(c){
     c.history = [{stageId:c.stageId, enteredAt:c.dataContratacao, exitedAt:null}];
     return c;
@@ -626,6 +631,14 @@
           parsed.stages.forEach(function(s){
             var def = DEFAULT_STAGES.find(function(d){return d.id===s.id;});
             if(def){ s.sla = def.sla; s.name = def.name; s.noSla = !!def.noSla; }
+          });
+          // Corretoras novas adicionadas na planilha oficial (DEFAULT_CARDS) e
+          // publicadas neste arquivo entram automaticamente para todo mundo,
+          // mesmo em quem ja tinha um estado salvo no navegador — sem apagar
+          // nenhuma movimentacao ou edicao ja feita nos cards existentes.
+          DEFAULT_CARDS.forEach(function(defCard){
+            var already = parsed.cards.some(function(c){ return c.corretora === defCard.corretora; });
+            if(!already) parsed.cards.push(JSON.parse(JSON.stringify(defCard)));
           });
           parsed.cards.forEach(migrateCard);
           return parsed;
