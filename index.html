@@ -466,12 +466,13 @@
     </div>
     <div class="modal-body">
       <p class="hint">Dias-alvo (SLA ideal) que cada etapa deveria levar. O SLA real é calculado automaticamente pelo log de entrada/saída de cada card. Cards acima do SLA ganham contorno vermelho. Use 0 para etapas contínuas sem prazo (ex: Produção).</p>
+      <p class="hint" style="background:var(--accent-soft); color:var(--accent-strong); padding:8px 10px; border-radius:8px;">Estes são os prazos oficiais publicados neste link. Alterar aqui muda só a sua visualização até recarregar a página. Para tornar um novo prazo oficial — valendo para todos que acessarem o link, de forma permanente — combine o novo valor com quem publica o quadro.</p>
       <div class="sla-table" id="sla-table"></div>
     </div>
     <div class="modal-foot">
       <span class="hint mono" id="sla-total"></span>
       <div style="flex:1"></div>
-      <button class="primary" id="btn-save-sla">Salvar</button>
+      <button class="primary" id="btn-save-sla">Salvar (só nesta sessão)</button>
     </div>
   </div>
 </div>
@@ -561,6 +562,15 @@
           if(!parsed.stages.some(function(s){return s.id==="producao";})){
             parsed.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0});
           }
+          // O prazo (SLA) de cada etapa e sempre o valor publicado neste arquivo
+          // (DEFAULT_STAGES), nunca o que ficou salvo no navegador de alguem antigamente.
+          // Assim, quando o SLA e atualizado e uma nova versao e publicada, todo mundo
+          // que acessar o link (e tambem quem so recarregar a pagina) passa a ver o
+          // mesmo prazo oficial, sem depender de cache local.
+          parsed.stages.forEach(function(s){
+            var def = DEFAULT_STAGES.find(function(d){return d.id===s.id;});
+            if(def) s.sla = def.sla;
+          });
           parsed.cards.forEach(migrateCard);
           return parsed;
         }
