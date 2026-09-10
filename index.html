@@ -545,18 +545,18 @@
   var STORAGE_KEY = "jornada-corretora-v3";
 
   var DEFAULT_STAGES = [
-    {id:"reuniao",        name:"Reunião",                        owner:"C6",        sla:2},
-    {id:"formalizacao",   name:"Formalização",                   owner:"Usadosbr",  sla:3},
-    {id:"pagamento",      name:"Status Pagamento",                owner:"Corretora", sla:5},
-    {id:"numero",         name:"Disponibilização de Número",      owner:"Corretora", sla:3},
-    {id:"config-meta",    name:"Configuração Meta",                owner:"Corretora", sla:2},
-    {id:"ativacao-meta",  name:"Ativação do Número na Meta",       owner:"Usadosbr",  sla:1},
-    {id:"perfil-crm",     name:"Criação Perfil CRM",               owner:"Usadosbr",  sla:2},
-    {id:"template",       name:"Criação Template/Comunicação",     owner:"Usadosbr",  sla:2},
-    {id:"envio-base",     name:"Envio da Base",                    owner:"Corretora", sla:3},
+    {id:"reuniao",        name:"Reunião",                        owner:"C6",        sla:0},
+    {id:"formalizacao",   name:"Formalização",                   owner:"Usadosbr",  sla:0},
+    {id:"pagamento",      name:"Status Pagamento",                owner:"Corretora", sla:1},
+    {id:"numero",         name:"Disponibilização de Número",      owner:"Corretora", sla:1},
+    {id:"config-meta",    name:"Envio do Convite Meta",           owner:"Corretora", sla:1},
+    {id:"ativacao-meta",  name:"Ativação do Número na Meta",       owner:"Usadosbr",  sla:2},
+    {id:"perfil-crm",     name:"Criação Perfil CRM",               owner:"Usadosbr",  sla:1},
+    {id:"template",       name:"Criação Template/Comunicação",     owner:"Usadosbr",  sla:1},
+    {id:"envio-base",     name:"Envio da Base",                    owner:"Corretora", sla:1},
     {id:"disparo-base",   name:"Disparo Base",                     owner:"Usadosbr",  sla:1},
-    {id:"treinamento",    name:"Treinamento",                      owner:"Usadosbr",  sla:2},
-    {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0}
+    {id:"treinamento",    name:"Treinamento",                      owner:"Usadosbr",  sla:1},
+    {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0, noSla:true}
   ];
 
   // Resumo de cada etapa, exibido no icone "i" ao lado do titulo da coluna.
@@ -618,16 +618,17 @@
         var parsed = JSON.parse(raw);
         if(parsed && parsed.stages && parsed.cards){
           if(!parsed.stages.some(function(s){return s.id==="producao";})){
-            parsed.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0});
+            parsed.stages.push({id:"producao", name:"Produção", owner:"Corretora", sla:0, noSla:true});
           }
-          // O prazo (SLA) de cada etapa e sempre o valor publicado neste arquivo
-          // (DEFAULT_STAGES), nunca o que ficou salvo no navegador de alguem antigamente.
-          // Assim, quando o SLA e atualizado e uma nova versao e publicada, todo mundo
-          // que acessar o link (e tambem quem so recarregar a pagina) passa a ver o
-          // mesmo prazo oficial, sem depender de cache local.
+          // O prazo (SLA), o nome e a flag "sem prazo" de cada etapa sao sempre os
+          // valores publicados neste arquivo (DEFAULT_STAGES), nunca o que ficou
+          // salvo no navegador de alguem antigamente. Assim, quando o SLA e
+          // atualizado (ou uma etapa e renomeada) e uma nova versao e publicada,
+          // todo mundo que acessar o link (e tambem quem so recarregar a pagina)
+          // passa a ver a versao oficial, sem depender de cache local.
           parsed.stages.forEach(function(s){
             var def = DEFAULT_STAGES.find(function(d){return d.id===s.id;});
-            if(def) s.sla = def.sla;
+            if(def){ s.sla = def.sla; s.name = def.name; s.noSla = !!def.noSla; }
           });
           parsed.cards.forEach(migrateCard);
           return parsed;
@@ -683,7 +684,7 @@
   }
   function cardIsOverdue(card, today){
     var stage = stageById(card.stageId);
-    if(!stage || stage.sla<=0) return false;
+    if(!stage || stage.noSla) return false;
     return cardRealDays(card, today) > stage.sla;
   }
   function cardMatchesFilters(card){
@@ -726,13 +727,13 @@
 
     var rows = stats.map(function(s, i){
       var y = topPad + i*rowH;
-      var barFill = s.stage.sla<=0 ? "url(#gradNeutral)" : (s.avg > s.stage.sla ? "url(#gradDanger)" : "url(#gradOk)");
+      var barFill = s.stage.noSla ? "url(#gradNeutral)" : (s.avg > s.stage.sla ? "url(#gradDanger)" : "url(#gradOk)");
       var barW = s.count ? Math.max(2, xScale(s.avg)) : 0;
       var label = escapeHtml(s.stage.name);
       var tickX = leftW + xScale(s.stage.sla);
-      var tick = s.stage.sla>0 ? '<line x1="'+tickX+'" y1="'+(y-3)+'" x2="'+tickX+'" y2="'+(y+barH+3)+'" stroke="var(--chart-tick)" stroke-width="2"/>' : '';
+      var tick = !s.stage.noSla ? '<line x1="'+tickX+'" y1="'+(y-3)+'" x2="'+tickX+'" y2="'+(y+barH+3)+'" stroke="var(--chart-tick)" stroke-width="2"/>' : '';
       var valueLabel = s.count ? (Math.round(s.avg*10)/10) + 'd' : 'sem dados';
-      var titleTxt = escapeHtml(s.stage.name) + ': ' + (s.count ? valueLabel + ' reais' : 'nenhuma passagem ainda') + ' (SLA ' + (s.stage.sla>0 ? s.stage.sla+'d' : 'sem prazo') + ', ' + s.count + ' passagens)';
+      var titleTxt = escapeHtml(s.stage.name) + ': ' + (s.count ? valueLabel + ' reais' : 'nenhuma passagem ainda') + ' (SLA ' + (!s.stage.noSla ? s.stage.sla+'d' : 'sem prazo') + ', ' + s.count + ' passagens)';
       var barRect = barW ? '<rect x="'+leftW+'" y="'+y+'" width="'+barW+'" height="'+barH+'" rx="7" fill="'+barFill+'" filter="url(#barGlow)"><title>'+titleTxt+'</title></rect>' : '<rect x="'+leftW+'" y="'+y+'" width="1" height="'+barH+'" fill="var(--chart-grid)"><title>'+titleTxt+'</title></rect>';
       return '<g>' +
         '<text x="0" y="'+(y+barH/2+4)+'" font-size="10.5" style="fill:var(--text-muted)" font-family="IBM Plex Sans, sans-serif">'+label+'</text>' +
@@ -778,12 +779,12 @@
     svg.innerHTML = defs + axisTicks + rows;
 
     var tbody = stats.map(function(s){
-      var status = s.stage.sla<=0 ? "Sem prazo" : (s.avg > s.stage.sla ? "Acima do SLA" : "Dentro do SLA");
-      var cls = s.stage.sla<=0 ? "sla-neutral" : (s.avg > s.stage.sla ? "sla-danger" : "sla-ok");
+      var status = s.stage.noSla ? "Sem prazo" : (s.avg > s.stage.sla ? "Acima do SLA" : "Dentro do SLA");
+      var cls = s.stage.noSla ? "sla-neutral" : (s.avg > s.stage.sla ? "sla-danger" : "sla-ok");
       return '<tr>' +
         '<td>'+escapeHtml(s.stage.name)+'</td>' +
         '<td><span class="owner-tag '+ownerClass(s.stage.owner)+'">'+s.stage.owner+'</span></td>' +
-        '<td class="mono">'+(s.stage.sla>0 ? s.stage.sla+'d' : '—')+'</td>' +
+        '<td class="mono">'+(!s.stage.noSla ? s.stage.sla+'d' : '—')+'</td>' +
         '<td class="mono">'+(s.count ? (Math.round(s.avg*10)/10)+'d' : '—')+'</td>' +
         '<td class="mono">'+s.count+'</td>' +
         '<td><span class="sla-chip '+cls+'">'+status+'</span></td>' +
@@ -797,7 +798,7 @@
   function renderStats(today){
     var total = state.cards.length;
     var overdue = state.cards.filter(function(c){return cardIsOverdue(c, today);}).length;
-    var producao = state.cards.filter(function(c){ var st=stageById(c.stageId); return st && st.sla<=0; }).length;
+    var producao = state.cards.filter(function(c){ var st=stageById(c.stageId); return st && st.noSla; }).length;
     var bar = document.getElementById("stats-bar");
     bar.innerHTML =
       '<span class="stat-pill"><span class="stat-dot" style="background:var(--accent-solid)"></span>Corretoras no funil <b>' + total + '</b></span>' +
@@ -825,7 +826,7 @@
     var sla = stage.sla;
     var chipClass, chipText;
     var overdue = false;
-    if(sla <= 0){
+    if(stage.noSla){
       chipClass = "sla-neutral"; chipText = days + "d em produção";
     } else {
       chipClass = "sla-ok"; chipText = days + "d real · SLA " + sla + "d";
@@ -906,7 +907,7 @@
       '</span>' +
       (groupTint ? '<button class="ghost icon-btn" data-collapse-group="' + groupTint.group.id + '" title="Agrupar novamente em ' + escapeHtml(groupTint.group.name) + '">−</button>' : '') +
       '</div>' +
-      '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
+      '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (!stage.noSla ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
     col.appendChild(head);
 
     if(groupTint){
@@ -1127,7 +1128,7 @@
   // ---- History modal ----
   var overlayHistory = document.getElementById("overlay-history");
   function statusFor(stage, real, exited){
-    if(!stage || stage.sla<=0) return {text: exited ? "Sem prazo" : "Sem prazo · em andamento", cls:"sla-neutral"};
+    if(!stage || stage.noSla) return {text: exited ? "Sem prazo" : "Sem prazo · em andamento", cls:"sla-neutral"};
     if(!exited) return real > stage.sla ? {text:"Atrasado · em andamento", cls:"sla-danger"} : {text:"Em andamento", cls:"sla-ok"};
     return real > stage.sla ? {text:"Atrasado", cls:"sla-danger"} : {text:"Dentro do prazo", cls:"sla-ok"};
   }
@@ -1147,7 +1148,7 @@
         '<td class="mono">' + fmtDate(h.enteredAt) + '</td>' +
         '<td class="mono">' + (h.exitedAt ? fmtDate(h.exitedAt) : 'Em andamento') + '</td>' +
         '<td class="mono">' + real + 'd</td>' +
-        '<td class="mono">' + (stage && stage.sla>0 ? stage.sla + 'd' : '—') + '</td>' +
+        '<td class="mono">' + (stage && !stage.noSla ? stage.sla + 'd' : '—') + '</td>' +
         '<td><span class="status-tag ' + st.cls + '">' + st.text + '</span></td>' +
       '</tr>';
     }).join("");
@@ -1263,7 +1264,7 @@
           card.corretora, card.resp || "", card.gp || "", fmtDate(card.dataContratacao), card.obs || "",
           stage ? stage.name : h.stageId, stage ? stage.owner : "",
           fmtDate(h.enteredAt), h.exitedAt ? fmtDate(h.exitedAt) : "Em andamento",
-          String(real), (stage && stage.sla>0) ? String(stage.sla) : "—", st.text
+          String(real), (stage && !stage.noSla) ? String(stage.sla) : "—", st.text
         ]);
       });
     });
