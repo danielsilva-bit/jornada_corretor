@@ -577,7 +577,7 @@
 
   // Fases do funil, para o botão "Agrupar" (colunas mescladas por fase)
   var STAGE_GROUPS = [
-    {id:"kickoff",      name:"Kickoff",              colorClass:"group-kickoff",     stageIds:["reuniao","formalizacao","pagamento"]},
+    {id:"kickoff",      name:"Início",               colorClass:"group-kickoff",     stageIds:["reuniao","formalizacao","pagamento"]},
     {id:"ativacao",     name:"Ativação",             colorClass:"group-ativacao",    stageIds:["numero","config-meta","ativacao-meta","perfil-crm","template"]},
     {id:"capacitacao",  name:"Capacitação e Start",  colorClass:"group-capacitacao", stageIds:["envio-base","disparo-base","treinamento","producao"]}
   ];
@@ -795,15 +795,14 @@
       '<tbody>'+tbody+'</tbody>';
   }
 
+  var GROUP_DOT_COLOR = {kickoff:"var(--accent-solid)", ativacao:"var(--warn)", capacitacao:"var(--ok)"};
   function renderStats(today){
-    var total = state.cards.length;
-    var overdue = state.cards.filter(function(c){return cardIsOverdue(c, today);}).length;
-    var producao = state.cards.filter(function(c){ var st=stageById(c.stageId); return st && st.noSla; }).length;
     var bar = document.getElementById("stats-bar");
-    bar.innerHTML =
-      '<span class="stat-pill"><span class="stat-dot" style="background:var(--accent-solid)"></span>Corretoras no funil <b>' + total + '</b></span>' +
-      '<span class="stat-pill' + (overdue>0?' is-danger':'') + '"><span class="stat-dot" style="background:var(--danger)"></span>Atrasadas (SLA estourado) <b>' + overdue + '</b></span>' +
-      '<span class="stat-pill"><span class="stat-dot" style="background:var(--ok)"></span>Em produção <b>' + producao + '</b></span>';
+    bar.innerHTML = STAGE_GROUPS.map(function(group){
+      var count = groupCount(group);
+      var color = GROUP_DOT_COLOR[group.id] || "var(--accent-solid)";
+      return '<span class="stat-pill"><span class="stat-dot" style="background:' + color + '"></span>' + escapeHtml(group.name) + ' <b>' + count + '</b></span>';
+    }).join("");
   }
 
   function groupCount(group){
