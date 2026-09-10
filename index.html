@@ -278,6 +278,20 @@
   .stage-sub-head .stage-sub-count{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   .stage-sub-body{display:flex; flex-direction:column; gap:9px;}
 
+  .title-with-info{display:inline-flex; align-items:center; gap:6px; min-width:0;}
+  .info-icon{
+    width:15px; height:15px; border-radius:50%; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); font-size:10px; font-weight:700; font-style:italic; font-family:Georgia,'Times New Roman',serif;
+    display:inline-flex; align-items:center; justify-content:center; cursor:help; flex-shrink:0; padding:0; line-height:1;
+    transition:.12s ease;
+  }
+  .info-icon:hover, .info-icon.active{background:var(--accent-soft); color:var(--accent-strong); border-color:transparent;}
+  .info-popover{
+    position:fixed; z-index:200; width:250px; max-width:min(78vw,260px);
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow-panel);
+    padding:10px 12px; font-size:12px; line-height:1.5; color:var(--text); font-weight:400;
+  }
+
   .owner-tag{
     display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600;
     text-transform:uppercase; letter-spacing:.04em; padding:3px 7px; border-radius:100px;
@@ -497,6 +511,8 @@
   </div>
 </div>
 
+<div class="info-popover" id="info-tooltip" hidden></div>
+
 <script>
 (function(){
   "use strict";
@@ -516,6 +532,22 @@
     {id:"treinamento",    name:"Treinamento",                      owner:"Usadosbr",  sla:2},
     {id:"producao",       name:"Produção",                         owner:"Corretora", sla:0}
   ];
+
+  // Resumo de cada etapa, exibido no icone "i" ao lado do titulo da coluna.
+  var STAGE_INFO = {
+    "reuniao": "Apresentação do conceito do projeto piloto: CRM, Hot-Site e condições de pagamento.",
+    "formalizacao": "Aguardando o aceite da corretora, enviado por e-mail. É necessário responder confirmando \"De acordo\", informando o CNPJ da corretora e o nome e e-mail dos usuários.",
+    "pagamento": "Aguardando a realização do pagamento pela corretora.",
+    "numero": "Aguardando a disponibilização do número novo para configuração. A corretora pode comprar um chip comum e disponibilizar esse número.",
+    "config-meta": "Criação de um grupo no WhatsApp com a corretora, o GN e a Usadosbr para orientação, enquanto o time Usadosbr configura a API da Meta com o nosso CRM.",
+    "ativacao-meta": "Com o ambiente da Meta configurado dentro do CRM, o número é ativado na ferramenta oficial.",
+    "perfil-crm": "Criação do perfil da corretora no CRM e liberação de acesso para os usuários.",
+    "template": "Com o ambiente pronto, criamos junto com a corretora uma mensagem personalizada para impactar a base de clientes. Antes do disparo, o texto é enviado para aprovação da Meta.",
+    "envio-base": "A corretora disponibiliza a base de clientes (nome, e-mail e telefone). É essencial garantir que os dados estejam corretos.",
+    "disparo-base": "O time carrega a base no sistema e prepara o disparo da comunicação.",
+    "treinamento": "Detalhamento das funções e da rotina da corretora, com esclarecimento de dúvidas e capacitação para a atuação.",
+    "producao": "A corretora foi configurada com sucesso e já está em atuação."
+  };
 
   // Fases do funil, para o botão "Agrupar" (colunas mescladas por fase)
   var STAGE_GROUPS = [
@@ -843,7 +875,9 @@
     var countLabel = anyFilterActive ? (visibleInStage.length + " de " + allInStage.length) : String(allInStage.length);
     head.innerHTML =
       '<span class="owner-tag ' + ownerClass(stage.owner) + '">' + stage.owner + '</span>' +
-      '<div class="col-head-row"><h3>' + stage.name + '</h3>' +
+      '<div class="col-head-row"><span class="title-with-info"><h3>' + stage.name + '</h3>' +
+      (STAGE_INFO[stage.id] ? '<button type="button" class="info-icon" data-info="' + stage.id + '" aria-label="Sobre esta etapa">i</button>' : '') +
+      '</span>' +
       (groupTint ? '<button class="ghost icon-btn" data-collapse-group="' + groupTint.group.id + '" title="Agrupar novamente em ' + escapeHtml(groupTint.group.name) + '">−</button>' : '') +
       '</div>' +
       '<div class="col-meta"><span class="count">' + countLabel + ' corretora' + (allInStage.length===1?'':'s') + '</span><span>' + (stage.sla > 0 ? 'SLA ' + stage.sla + 'd' : 'sem prazo') + '</span></div>';
@@ -913,7 +947,9 @@
 
       var subHead = document.createElement("div");
       subHead.className = "stage-sub-head";
-      subHead.innerHTML = '<span>' + escapeHtml(stage.name) + '</span><span class="stage-sub-count">' + allInStage.length + '</span>';
+      subHead.innerHTML = '<span class="title-with-info"><span>' + escapeHtml(stage.name) + '</span>' +
+        (STAGE_INFO[stage.id] ? '<button type="button" class="info-icon" data-info="' + stage.id + '" aria-label="Sobre esta etapa">i</button>' : '') +
+        '</span><span class="stage-sub-count">' + allInStage.length + '</span>';
       section.appendChild(subHead);
 
       var subBody = document.createElement("div");
@@ -1232,6 +1268,69 @@
       btn.disabled = false; btn.textContent = originalLabel;
     }
   });
+
+  // ---- Info tooltip (icone "i" com resumo de cada etapa) ----
+  var infoTip = document.getElementById("info-tooltip");
+  var infoPinned = false;
+
+  function positionInfoTip(iconEl){
+    var r = iconEl.getBoundingClientRect();
+    var margin = 10;
+    infoTip.style.visibility = "hidden";
+    infoTip.hidden = false;
+    var tipW = infoTip.offsetWidth || 250;
+    var left = r.left;
+    if(left + tipW + margin > window.innerWidth) left = window.innerWidth - tipW - margin;
+    if(left < margin) left = margin;
+    var top = r.bottom + 7;
+    var tipH = infoTip.offsetHeight;
+    if(top + tipH + margin > window.innerHeight){
+      var above = r.top - tipH - 7;
+      if(above > margin) top = above;
+    }
+    infoTip.style.left = left + "px";
+    infoTip.style.top = top + "px";
+    infoTip.style.visibility = "visible";
+  }
+  function showInfoTip(iconEl){
+    var text = STAGE_INFO[iconEl.dataset.info];
+    if(!text) return;
+    infoTip.textContent = text;
+    positionInfoTip(iconEl);
+  }
+  function hideInfoTip(){
+    if(infoPinned) return;
+    infoTip.hidden = true;
+  }
+  document.addEventListener("mouseover", function(e){
+    var icon = e.target.closest && e.target.closest(".info-icon");
+    if(icon) showInfoTip(icon);
+  });
+  document.addEventListener("mouseout", function(e){
+    var icon = e.target.closest && e.target.closest(".info-icon");
+    if(icon) hideInfoTip();
+  });
+  document.addEventListener("click", function(e){
+    var icon = e.target.closest && e.target.closest(".info-icon");
+    if(icon){
+      e.stopPropagation();
+      if(infoPinned && infoTip.dataset.stage === icon.dataset.info){
+        infoPinned = false;
+        infoTip.hidden = true;
+      } else {
+        infoPinned = true;
+        infoTip.dataset.stage = icon.dataset.info;
+        showInfoTip(icon);
+      }
+      return;
+    }
+    if(infoPinned && !infoTip.contains(e.target)){
+      infoPinned = false;
+      infoTip.hidden = true;
+    }
+  });
+  window.addEventListener("scroll", function(){ infoPinned = false; infoTip.hidden = true; }, true);
+  window.addEventListener("resize", function(){ infoPinned = false; infoTip.hidden = true; });
 
   render();
 })();
