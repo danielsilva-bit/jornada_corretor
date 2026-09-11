@@ -411,6 +411,29 @@
 
   ::-webkit-scrollbar{height:10px; width:10px;}
   ::-webkit-scrollbar-thumb{background:var(--surface-3); border-radius:8px;}
+
+  /* Telas estreitas (celular) — o cabeçalho e as etapas do funil se ajustam
+     para não sobrepor nem cortar texto. Os cards do quadro continuam com
+     largura fixa e passam a rolar de lado, como em qualquer Kanban. */
+  @media (max-width: 720px){
+    header.top{
+      grid-template-columns:1fr; padding:14px 16px 12px; gap:10px;
+    }
+    .title-block{grid-column:1; flex-wrap:wrap;}
+    .title-block h1{font-size:16px;}
+    .title-block p{font-size:12px;}
+    .top-actions{grid-column:1; justify-content:center;}
+    .tabs-bar{
+      flex-wrap:wrap; row-gap:8px; padding:10px 16px; min-height:auto;
+    }
+    .stats-bar{
+      position:static; transform:none; order:3; width:100%;
+      justify-content:flex-start;
+    }
+    .filters-bar{padding:10px 16px;}
+    .filters-bar input[type="search"]{flex:1 1 100%; min-width:0; max-width:none; width:auto;}
+    main.board-wrap{padding:16px 16px 32px;}
+  }
 </style>
 
 <header class="top">
